@@ -1,8 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import svgPaths from '../imports/svg-opovdd5lqn';
 import WallPage from './WallPage';
+import logoImg from './assets/logo.png';
 
 type Page = 'dashboard' | 'wall';
+
+function RibbonMedalIcon({ size = 20, color = '#F54900' }: { size?: number; color?: string }) {
+  return (
+    <svg fill="none" viewBox="0 0 35 35" width={size} height={size} strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+      <path
+        d="M22.0993 18.4141L24.2627 30.589C24.2869 30.7324 24.2668 30.8798 24.205 31.0114C24.1433 31.143 24.0428 31.2526 23.917 31.3256C23.7913 31.3986 23.6462 31.4314 23.5013 31.4197C23.3564 31.408 23.2185 31.3524 23.106 31.2602L17.9939 27.4232C17.7471 27.2389 17.4473 27.1392 17.1392 27.1392C16.8312 27.1392 16.5314 27.2389 16.2846 27.4232L11.1639 31.2588C11.0515 31.3508 10.9138 31.4063 10.769 31.418C10.6243 31.4298 10.4794 31.397 10.3537 31.3243C10.228 31.2515 10.1275 31.1421 10.0656 31.0108C10.0037 30.8794 9.98334 30.7323 10.0072 30.589L12.1692 18.4141"
+        stroke={color}
+        strokeWidth="2.6"
+      />
+      <path
+        d="M17.136 19.997C21.8679 19.997 25.7038 16.1611 25.7038 11.4292C25.7038 6.69729 21.8679 2.86133 17.136 2.86133C12.4041 2.86133 8.56812 6.69729 8.56812 11.4292C8.56812 16.1611 12.4041 19.997 17.136 19.997Z"
+        stroke={color}
+        strokeWidth="2.6"
+      />
+    </svg>
+  );
+}
 
 // ─── SVG Icon primitives ──────────────────────────────────────────────────────
 
@@ -246,12 +264,9 @@ function StarEmpty() {
 function LogoBox() {
   return (
     <div
-      className="relative rounded-[16px] shrink-0 size-[44px] drop-shadow-[0px_10px_8px_rgba(0,0,0,0.1)] flex items-center justify-center"
-      style={{ backgroundImage: "linear-gradient(135deg, rgb(255,105,0) 0%, rgb(245,73,0) 50%, rgb(202,53,0) 100%)" }}
+      className="relative rounded-[14px] shrink-0 size-[44px] drop-shadow-[0px_6px_10px_rgba(245,73,0,0.25)] flex items-center justify-center overflow-hidden"
     >
-      <svg viewBox="0 0 24 24" width="24" height="24" fill="white" stroke="none">
-        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-      </svg>
+      <img src={logoImg} alt="LLS Logo" className="w-full h-full object-cover" />
     </div>
   );
 }
@@ -462,54 +477,66 @@ interface StatCardProps {
 function StatCard({ label, value, trend, trendValue, icon, gradientAngle = '153deg', circleLeft = '172px', mini = false }: StatCardProps) {
   return (
     <div
-      className={`relative rounded-[15px] overflow-hidden shadow-[0px_10px_16px_-3px_rgba(0,0,0,0.1),0px_4px_6px_-4px_rgba(0,0,0,0.1)] flex-1 min-w-0 ${mini ? 'h-[124px]' : 'h-[180px]'} hover:shadow-[0px_16px_24px_-4px_rgba(245,73,0,0.25)] transition-shadow duration-200 cursor-default`}
+      className={`relative rounded-[15px] overflow-hidden shadow-[0px_10px_16px_-3px_rgba(0,0,0,0.1),0px_4px_6px_-4px_rgba(0,0,0,0.1)] flex-1 min-w-0 ${mini ? 'h-[126px]' : 'h-[180px]'} hover:shadow-[0px_16px_24px_-4px_rgba(245,73,0,0.25)] transition-shadow duration-200 cursor-default`}
       style={{ backgroundImage: `linear-gradient(${gradientAngle}, rgb(245,73,0) 0%, rgb(248,81,1) 100%)` }}
     >
-      {/* Decorative circle - desktop only */}
-      {!mini && <div className="absolute rounded-full bg-white/10 w-[138px] h-[138px]" style={{ left: circleLeft, top: '-68px' }} />}
+      {/* Decorative circle */}
+      <div
+        className="absolute rounded-full bg-white/10 pointer-events-none"
+        style={mini ? { width: '84px', height: '84px', right: '-16px', top: '-20px' } : { left: circleLeft, top: '-68px', width: '138px', height: '138px' }}
+      />
 
       {/* Content */}
-      <div className={`absolute inset-0 flex flex-col justify-between ${mini ? 'p-[11px]' : 'p-6'}`}>
+      <div className={`absolute inset-0 flex flex-col justify-between ${mini ? 'p-2.5 sm:p-3' : 'p-6'}`}>
         <div>
-          <div className={`flex items-center gap-1 ${mini ? 'mb-2' : 'mb-4 gap-2.5'}`}>
+          <div className={`flex items-center gap-1.5 ${mini ? 'mb-1' : 'mb-4 gap-2.5'}`}>
             <span className={mini ? '[&_svg]:w-[14px] [&_svg]:h-[14px]' : ''}>{icon}</span>
-            <span className={`font-['Inter:Regular',sans-serif] text-[#ffedd4] tracking-[-0.02em] leading-tight ${mini ? 'text-[11px]' : 'text-[17px]'}`}>{label}</span>
+            <span className={`font-['Inter:Regular',sans-serif] text-[#ffedd4] tracking-[-0.02em] leading-tight ${mini ? 'text-[12px]' : 'text-[17px]'}`}>{label}</span>
           </div>
-          <p className={`font-['Inter:Medium',sans-serif] text-white leading-tight tracking-[0.01em] ${mini ? 'text-[22px]' : 'text-[38px]'}`}>{value}</p>
+          <p className={`font-['Inter:Medium',sans-serif] text-white leading-tight tracking-[0.01em] ${mini ? 'text-[20px] sm:text-[22px]' : 'text-[38px]'}`}>{value}</p>
         </div>
-        <div className="flex items-center gap-1.5">
-          <div className={`flex items-center gap-1 bg-white/20 ${mini ? 'px-2 py-[3px] rounded-[6px]' : 'px-3 py-1 rounded-[9px]'}`}>
+        <div className="flex items-center gap-1 flex-wrap">
+          <div className={`flex items-center gap-1 bg-white/20 ${mini ? 'px-1.5 py-[2px] rounded-[6px]' : 'px-3 py-1 rounded-[9px]'}`}>
             {trend === 'up' ? <TrendUpIcon /> : <TrendDownIcon />}
-            <span className={`font-['Inter:Medium',sans-serif] text-white ${mini ? 'text-[11px]' : 'text-[13px]'}`}>{trendValue}</span>
+            <span className={`font-['Inter:Medium',sans-serif] text-white ${mini ? 'text-[10px]' : 'text-[13px]'}`}>{trendValue}</span>
           </div>
-          {!mini && <span className="font-['Inter:Regular',sans-serif] text-[15px] text-[#ffedd4]">vs last month</span>}
+          <span className={`font-['Inter:Regular',sans-serif] text-[#ffedd4] ${mini ? 'text-[9.5px]' : 'text-[15px]'}`}>vs last month</span>
         </div>
       </div>
     </div>
   );
 }
 
-// ─── Achievements Card ────────────────────────────────────────────────────────
+// ─── Achievements Card (Desktop) ──────────────────────────────────────────────
 
-function AchievementsCard() {
+function AchievementsCard({ onOpenModal }: { onOpenModal?: () => void }) {
   return (
     <div
-      className="rounded-[15px] border border-[#ffd6a7] drop-shadow-[0px_10px_8px_rgba(0,0,0,0.1)] h-[180px] w-full md:w-[320px] xl:w-[360px] relative overflow-hidden cursor-default hover:shadow-[0px_12px_24px_rgba(255,105,0,0.15)] transition-shadow duration-200"
+      onClick={onOpenModal}
+      className="rounded-[15px] border border-[#ffd6a7] drop-shadow-[0px_10px_8px_rgba(0,0,0,0.1)] h-[180px] w-full md:w-[320px] xl:w-[360px] relative overflow-hidden cursor-pointer hover:shadow-[0px_12px_24px_rgba(255,105,0,0.15)] transition-all duration-200 group"
       style={{ backgroundImage: "linear-gradient(161deg, rgb(255,247,237) 0%, rgb(255,255,255) 100%)" }}
     >
       {/* Title */}
       <div className="flex items-center justify-between px-5 pt-5">
         <div className="flex items-center gap-2">
-          <TrophyIcon />
+          <RibbonMedalIcon size={24} color="#F54900" />
           <span className="font-['Inter:Regular',sans-serif] text-[17px] text-[#0a0a0a] tracking-[-0.02em]">Achievements | Trophies</span>
         </div>
       </div>
-      <button className="absolute top-5 right-5 font-['Inter:Regular',sans-serif] text-[13px] text-[#f54900] hover:underline cursor-pointer transition-colors duration-150">View All →</button>
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onOpenModal?.();
+        }}
+        className="absolute top-5 right-5 font-['Inter:Regular',sans-serif] text-[13px] text-[#f54900] group-hover:underline cursor-pointer transition-colors duration-150"
+      >
+        View All →
+      </button>
 
       {/* Gold content */}
       <div className="flex flex-col items-center mt-3">
         <div className="flex items-center gap-2">
-          <GoldTrophyIcon />
+          <RibbonMedalIcon size={36} color="#F54900" />
           <span
             className="font-['Inter:Bold',sans-serif] text-[36px] bg-clip-text text-transparent"
             style={{ backgroundImage: "linear-gradient(90deg, #ff6900, #f54900, #ca3500)" }}
@@ -525,39 +552,317 @@ function AchievementsCard() {
 
 // ─── Achievements Card (Mobile compact) ──────────────────────────────────────
 
-function AchievementsCardMobile() {
+function AchievementsCardMobile({ onOpenModal }: { onOpenModal?: () => void }) {
   return (
     <div
-      className="rounded-[14px] border border-[#ffd6a7] drop-shadow-[0px_8px_6px_rgba(0,0,0,0.08)] h-[80px] w-full relative overflow-hidden flex items-center px-4 gap-2 cursor-default"
-      style={{ backgroundImage: "linear-gradient(174deg, rgb(255,247,237) 0%, rgb(255,255,255) 100%)" }}
+      onClick={onOpenModal}
+      className="w-full shrink-0 min-h-[54px] h-[54px] sm:h-[56px] rounded-[14px] border border-[#ffd6a7] flex items-center justify-between px-3.5 sm:px-4 cursor-pointer hover:border-[#ff9a3d] transition-all duration-150 active:scale-[0.99] group shadow-xs bg-white"
+      style={{
+        minHeight: '54px',
+        height: '54px',
+        flexShrink: 0,
+        backgroundImage: 'linear-gradient(174deg, rgb(255, 247, 237) 0%, rgb(255, 255, 255) 100%)',
+      }}
     >
-      {/* Left: trophy + title */}
-      <div className="flex items-center gap-1.5 shrink-0">
-        <svg fill="none" viewBox="0 0 24 24" width="18" height="18" stroke="#F54900" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d={svgPaths.p29318680} />
-          <path d={svgPaths.p1ac19d80} />
-        </svg>
-        <span className="font-['Inter:Regular',sans-serif] text-[11px] text-[#0a0a0a] tracking-[-0.01em] whitespace-nowrap">Achievements</span>
+      {/* Left: Ribbon + Title */}
+      <div className="flex items-center gap-2 shrink-0">
+        <RibbonMedalIcon size={22} color="#F54900" />
+        <span className="font-['Inter:Regular',sans-serif] text-[13.5px] sm:text-[15px] text-[#0a0a0a] tracking-[-0.01em] whitespace-nowrap">
+          Achievements | Trophies
+        </span>
       </div>
 
-      {/* Center: small trophy + Gold */}
-      <div className="flex-1 flex items-center justify-center gap-1">
-        <svg fill="none" viewBox="0 0 40 40" width="18" height="18" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3.34">
-          <path d={svgPaths.p2c92d080} stroke="#F54900" />
-          <path d={svgPaths.p10701a00} stroke="#F54900" />
-        </svg>
+      {/* Center: Ribbon + Gold */}
+      <div className="flex items-center gap-1.5 shrink-0">
+        <RibbonMedalIcon size={22} color="#F54900" />
         <span
-          className="font-['Inter:Bold',sans-serif] text-[18px] bg-clip-text text-transparent leading-none"
-          style={{ backgroundImage: "linear-gradient(90deg, #ff6900, #f54900, #ca3500)" }}
+          className="font-['Inter:Bold',sans-serif] text-[20px] sm:text-[22px] text-[#f54900] font-bold leading-none"
         >
           Gold
         </span>
       </div>
 
       {/* Right: View All */}
-      <button className="shrink-0 font-['Inter:Medium',sans-serif] text-[11px] text-[#f54900] hover:underline cursor-pointer transition-colors duration-150 whitespace-nowrap">
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onOpenModal?.();
+        }}
+        className="shrink-0 font-['Inter:Medium',sans-serif] text-[12px] sm:text-[13px] text-[#f54900] group-hover:underline cursor-pointer transition-colors duration-150 whitespace-nowrap"
+      >
         View All →
       </button>
+    </div>
+  );
+}
+
+// ─── Achievements & Badges Modal ─────────────────────────────────────────────
+
+interface AchievementsBadgesModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+function AchievementsBadgesModal({ isOpen, onClose }: AchievementsBadgesModalProps) {
+  const [filter, setFilter] = useState<'all' | 'unlocked' | 'locked'>('all');
+
+  if (!isOpen) return null;
+
+  const badges = [
+    {
+      id: '1',
+      title: 'Top Performer',
+      category: 'Performance',
+      description: 'Achieved #1 sales rank among 2,210 team members',
+      icon: '🥇',
+      unlocked: true,
+      date: 'Aug 28, 2026',
+      points: '+250 Pts',
+      tier: 'Gold',
+    },
+    {
+      id: '2',
+      title: 'Quota Crusher',
+      category: 'Milestone',
+      description: 'Exceeded monthly variable targets by 15%+',
+      icon: '🎯',
+      unlocked: true,
+      date: 'Aug 24, 2026',
+      points: '+180 Pts',
+      tier: 'Gold',
+    },
+    {
+      id: '3',
+      title: 'Consistency Master',
+      category: 'Streak',
+      description: 'Maintained 95%+ score for 6 consecutive months',
+      icon: '🏆',
+      unlocked: true,
+      date: 'Aug 15, 2026',
+      points: '+300 Pts',
+      tier: 'Gold',
+    },
+    {
+      id: '4',
+      title: 'Speed Demon',
+      category: 'Velocity',
+      description: 'Processed and dispatched 120 orders in under 48 hours',
+      icon: '⚡',
+      unlocked: true,
+      date: 'Aug 10, 2026',
+      points: '+150 Pts',
+      tier: 'Silver',
+    },
+    {
+      id: '5',
+      title: 'Wall Inspiration',
+      category: 'Community',
+      description: 'Accumulated 31k+ likes and 5k+ comments on Wall of Fame',
+      icon: '🌟',
+      unlocked: true,
+      date: 'Aug 02, 2026',
+      points: '+200 Pts',
+      tier: 'Silver',
+    },
+    {
+      id: '6',
+      title: 'Budget Guardian',
+      category: 'Accuracy',
+      description: 'Zero variance across all variable balance audits for 90 days',
+      icon: '🛡️',
+      unlocked: true,
+      date: 'Jul 20, 2026',
+      points: '+120 Pts',
+      tier: 'Bronze',
+    },
+    {
+      id: '7',
+      title: 'Platinum Legend',
+      category: 'Tier Status',
+      description: 'Earn 2,000 total program balance points',
+      icon: '👑',
+      unlocked: false,
+      progress: '1,683 / 2,000 Pts (84%)',
+      points: '+500 Pts',
+      tier: 'Platinum',
+    },
+    {
+      id: '8',
+      title: 'Diamond Hall of Fame',
+      category: 'Ultimate',
+      description: 'Hold the #1 member ranking for 3 consecutive quarters',
+      icon: '💎',
+      unlocked: false,
+      progress: '2 / 3 Quarters (67%)',
+      points: '+1,000 Pts',
+      tier: 'Diamond',
+    },
+  ];
+
+  const filteredBadges = badges.filter((b) => {
+    if (filter === 'unlocked') return b.unlocked;
+    if (filter === 'locked') return !b.unlocked;
+    return true;
+  });
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs">
+      <div className="absolute inset-0" onClick={onClose} />
+      <div className="relative bg-white w-full max-w-[620px] max-h-[90vh] rounded-[22px] shadow-2xl border border-orange-100 flex flex-col overflow-hidden z-10">
+        {/* Modal Header */}
+        <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-orange-50/50 via-white to-orange-50/30">
+          <div className="flex items-center gap-2.5">
+            <RibbonMedalIcon size={26} color="#F54900" />
+            <div>
+              <h2 className="font-['Inter:Bold',sans-serif] text-[18px] sm:text-[20px] text-[#0a0a0a] leading-tight">
+                Achievements & Badges
+              </h2>
+              <p className="font-['Inter:Regular',sans-serif] text-[12px] sm:text-[13px] text-[#6a7282]">
+                Your performance honors, medals, and badges
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-[10px] hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
+          >
+            <svg fill="none" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Scrollable Body */}
+        <div className="flex-1 overflow-y-auto px-5 sm:px-6 py-4 space-y-4">
+          {/* Current Tier Banner */}
+          <div
+            className="rounded-[16px] p-4 sm:p-5 border border-[#ffd6a7] shadow-[0px_4px_12px_rgba(255,105,0,0.08)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+            style={{ backgroundImage: "linear-gradient(135deg, rgb(255,247,237) 0%, rgb(255,255,255) 100%)" }}
+          >
+            <div className="flex items-center gap-3">
+              <div className="size-[48px] rounded-[14px] bg-gradient-to-tr from-[#ff6900] to-[#f54900] flex items-center justify-center text-white shadow-md shadow-orange-500/20 shrink-0">
+                <RibbonMedalIcon size={28} color="white" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-['Inter:Bold',sans-serif] text-[20px] bg-clip-text text-transparent" style={{ backgroundImage: "linear-gradient(90deg, #ff6900, #f54900, #ca3500)" }}>
+                    Gold Tier
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-orange-100 text-orange-700">Level 4</span>
+                </div>
+                <p className="font-['Inter:Regular',sans-serif] text-[13px] text-[#4a5565]">
+                  Elite Performance Award · 1,683 Total Points
+                </p>
+              </div>
+            </div>
+
+            {/* Next tier progress */}
+            <div className="w-full sm:w-[160px] bg-white/80 rounded-[12px] p-2.5 border border-orange-100/80">
+              <div className="flex justify-between text-[11px] font-medium text-[#4a5565] mb-1">
+                <span>Next: Platinum</span>
+                <span className="text-[#f54900] font-bold">84%</span>
+              </div>
+              <div className="w-full h-2 bg-orange-100 rounded-full overflow-hidden">
+                <div className="h-full bg-gradient-to-r from-[#ff6900] to-[#f54900] rounded-full" style={{ width: '84%' }} />
+              </div>
+              <span className="text-[10px] text-[#99a1af] block text-right mt-1">317 pts needed</span>
+            </div>
+          </div>
+
+          {/* Filter Tabs */}
+          <div className="flex items-center gap-1.5 p-1 bg-gray-100/80 rounded-[12px] text-[13px]">
+            <button
+              onClick={() => setFilter('all')}
+              className={`flex-1 py-1.5 rounded-[9px] font-medium transition-all cursor-pointer ${
+                filter === 'all' ? 'bg-white text-[#0a0a0a] shadow-xs' : 'text-[#6a7282] hover:text-[#0a0a0a]'
+              }`}
+            >
+              All Badges ({badges.length})
+            </button>
+            <button
+              onClick={() => setFilter('unlocked')}
+              className={`flex-1 py-1.5 rounded-[9px] font-medium transition-all cursor-pointer ${
+                filter === 'unlocked' ? 'bg-white text-[#0a0a0a] shadow-xs' : 'text-[#6a7282] hover:text-[#0a0a0a]'
+              }`}
+            >
+              Unlocked (6)
+            </button>
+            <button
+              onClick={() => setFilter('locked')}
+              className={`flex-1 py-1.5 rounded-[9px] font-medium transition-all cursor-pointer ${
+                filter === 'locked' ? 'bg-white text-[#0a0a0a] shadow-xs' : 'text-[#6a7282] hover:text-[#0a0a0a]'
+              }`}
+            >
+              In Progress (2)
+            </button>
+          </div>
+
+          {/* Badges List */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-2">
+            {filteredBadges.map((badge) => (
+              <div
+                key={badge.id}
+                className={`p-3.5 rounded-[15px] border transition-all ${
+                  badge.unlocked
+                    ? 'border-orange-200/80 bg-gradient-to-br from-orange-50/40 via-white to-white shadow-xs'
+                    : 'border-gray-200 bg-gray-50/60 opacity-80'
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  <div
+                    className={`size-[42px] rounded-[12px] flex items-center justify-center text-[22px] shrink-0 ${
+                      badge.unlocked ? 'bg-orange-100/70 border border-orange-200/50' : 'bg-gray-200 text-gray-400 grayscale'
+                    }`}
+                  >
+                    {badge.icon}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-1">
+                      <h4 className="font-['Inter:Medium',sans-serif] text-[14px] text-[#0a0a0a] truncate">
+                        {badge.title}
+                      </h4>
+                      <span className="text-[11px] font-semibold text-[#f54900] shrink-0">
+                        {badge.points}
+                      </span>
+                    </div>
+                    <p className="font-['Inter:Regular',sans-serif] text-[12px] text-[#6a7282] mt-0.5 line-clamp-2">
+                      {badge.description}
+                    </p>
+                    <div className="mt-2 flex items-center justify-between text-[11px]">
+                      {badge.unlocked ? (
+                        <span className="inline-flex items-center gap-1 text-emerald-600 font-medium">
+                          ✓ Earned {badge.date}
+                        </span>
+                      ) : (
+                        <span className="text-amber-600 font-medium">
+                          ⏳ {badge.progress}
+                        </span>
+                      )}
+                      <span className="text-[10px] text-gray-400 px-1.5 py-0.5 rounded-sm bg-gray-100">
+                        {badge.tier}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Modal Footer */}
+        <div className="px-5 sm:px-6 py-3 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+          <div className="text-[12px] text-gray-500">
+            Current rank: <span className="font-bold text-[#f54900]">#1</span> of 2,210 members
+          </div>
+          <button
+            onClick={onClose}
+            className="px-5 py-2 rounded-[11px] bg-gradient-to-r from-[#ff6900] to-[#f54900] text-white font-medium text-[13px] hover:from-[#e55d00] hover:to-[#d94000] transition-colors cursor-pointer"
+          >
+            Close
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -692,54 +997,68 @@ function RecentTransactionsCard() {
 
 // ─── Ranking & Program Balance ────────────────────────────────────────────────
 
-function RankingCard() {
+function RankingCard({ mobileBottomLink = false }: { mobileBottomLink?: boolean }) {
   return (
     <div
-      className="rounded-[15px] border border-[#ffd6a7] drop-shadow-[0px_10px_8px_rgba(0,0,0,0.1)] flex-1 py-5 px-5 cursor-default hover:shadow-[0px_12px_24px_rgba(255,105,0,0.12)] transition-shadow duration-200"
+      className="rounded-[15px] border border-[#ffd6a7] drop-shadow-[0px_10px_8px_rgba(0,0,0,0.1)] flex-1 py-4 px-4 md:py-5 md:px-5 cursor-default hover:shadow-[0px_12px_24px_rgba(255,105,0,0.12)] transition-shadow duration-200 flex flex-col justify-between"
       style={{ backgroundImage: "linear-gradient(166deg, rgb(255,247,237) 0%, rgb(255,255,255) 100%)" }}
     >
-      <div className="flex items-center justify-between mb-4 gap-1">
-        <div className="flex items-center gap-2 min-w-0">
+      <div className="flex items-center justify-between mb-3 gap-1">
+        <div className="flex items-center gap-1.5 md:gap-2 min-w-0">
           <RankingIcon />
-          <span className="font-['Inter:Regular',sans-serif] text-[14px] md:text-[17px] text-[#0a0a0a] tracking-[-0.02em] truncate">Ranking Actual</span>
+          <span className="font-['Inter:Regular',sans-serif] text-[13.5px] md:text-[17px] text-[#0a0a0a] tracking-[-0.02em] truncate">Ranking Actual</span>
         </div>
-        <button className="font-['Inter:Regular',sans-serif] text-[12px] md:text-[13px] text-[#f54900] hover:underline cursor-pointer transition-colors duration-150 shrink-0">View All →</button>
+        {!mobileBottomLink && (
+          <button className="font-['Inter:Regular',sans-serif] text-[12px] md:text-[13px] text-[#f54900] hover:underline cursor-pointer transition-colors duration-150 shrink-0">View All →</button>
+        )}
       </div>
-      <div className="text-center">
+      <div className="text-center my-1">
         <p
-          className="font-['Inter:Bold',sans-serif] text-[32px] md:text-[46px] bg-clip-text text-transparent tracking-[0.01em] leading-none"
+          className="font-['Inter:Bold',sans-serif] text-[34px] md:text-[46px] bg-clip-text text-transparent tracking-[0.01em] leading-none"
           style={{ backgroundImage: "linear-gradient(90deg, #ff6900, #f54900, #ca3500)" }}
         >
           #1
         </p>
-        <p className="font-['Inter:Regular',sans-serif] text-[11px] md:text-[12px] text-[#6a7282] mt-1">#1 of 2210 Members</p>
+        <p className="font-['Inter:Regular',sans-serif] text-[11px] md:text-[12px] text-[#6a7282] mt-1.5">#1 of 2210 Members</p>
       </div>
+      {mobileBottomLink && (
+        <div className="text-center mt-3 pt-1">
+          <button className="font-['Inter:Regular',sans-serif] text-[12px] text-[#f54900] hover:underline cursor-pointer transition-colors duration-150">View All →</button>
+        </div>
+      )}
     </div>
   );
 }
 
-function ProgramBalanceCard() {
+function ProgramBalanceCard({ mobileBottomLink = false }: { mobileBottomLink?: boolean }) {
   return (
     <div
-      className="rounded-[15px] border border-[#ffd6a7] drop-shadow-[0px_10px_8px_rgba(0,0,0,0.1)] flex-1 py-5 px-5 cursor-default hover:shadow-[0px_12px_24px_rgba(255,105,0,0.12)] transition-shadow duration-200"
+      className="rounded-[15px] border border-[#ffd6a7] drop-shadow-[0px_10px_8px_rgba(0,0,0,0.1)] flex-1 py-4 px-4 md:py-5 md:px-5 cursor-default hover:shadow-[0px_12px_24px_rgba(255,105,0,0.12)] transition-shadow duration-200 flex flex-col justify-between"
       style={{ backgroundImage: "linear-gradient(166deg, rgb(255,247,237) 0%, rgb(255,255,255) 100%)" }}
     >
-      <div className="flex items-center justify-between mb-4 gap-1">
-        <div className="flex items-center gap-2 min-w-0">
+      <div className="flex items-center justify-between mb-3 gap-1">
+        <div className="flex items-center gap-1.5 md:gap-2 min-w-0">
           <BalanceIcon />
-          <span className="font-['Inter:Regular',sans-serif] text-[14px] md:text-[17px] text-[#0a0a0a] tracking-[-0.02em] truncate">Program Balance</span>
+          <span className="font-['Inter:Regular',sans-serif] text-[13.5px] md:text-[17px] text-[#0a0a0a] tracking-[-0.02em] truncate">Program Balance</span>
         </div>
-        <button className="font-['Inter:Regular',sans-serif] text-[12px] md:text-[13px] text-[#f54900] hover:underline cursor-pointer transition-colors duration-150 shrink-0">View All →</button>
+        {!mobileBottomLink && (
+          <button className="font-['Inter:Regular',sans-serif] text-[12px] md:text-[13px] text-[#f54900] hover:underline cursor-pointer transition-colors duration-150 shrink-0">View All →</button>
+        )}
       </div>
-      <div className="text-center">
+      <div className="text-center my-1">
         <p
-          className="font-['Inter:Bold',sans-serif] text-[32px] md:text-[46px] bg-clip-text text-transparent tracking-[0.01em] leading-none"
+          className="font-['Inter:Bold',sans-serif] text-[34px] md:text-[46px] bg-clip-text text-transparent tracking-[0.01em] leading-none"
           style={{ backgroundImage: "linear-gradient(90deg, #ff6900, #f54900, #ca3500)" }}
         >
           66
         </p>
-        <p className="font-['Inter:Regular',sans-serif] text-[11px] md:text-[12px] text-[#6a7282] mt-1">Total Points</p>
+        <p className="font-['Inter:Regular',sans-serif] text-[11px] md:text-[12px] text-[#6a7282] mt-1.5">Total Points</p>
       </div>
+      {mobileBottomLink && (
+        <div className="text-center mt-3 pt-1">
+          <button className="font-['Inter:Regular',sans-serif] text-[12px] text-[#f54900] hover:underline cursor-pointer transition-colors duration-150">View All →</button>
+        </div>
+      )}
     </div>
   );
 }
@@ -940,18 +1259,36 @@ function BudgetTable() {
 export default function App() {
   const [page, setPage] = useState<Page>('dashboard');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [achievementsModalOpen, setAchievementsModalOpen] = useState(false);
 
   return (
     <div className="flex h-full overflow-hidden bg-white">
-      {/* Mobile sidebar overlay */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 md:hidden">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setMobileMenuOpen(false)} />
-          <div className="absolute left-0 top-0 bottom-0 w-[280px] shadow-2xl overflow-hidden">
-            <Sidebar mobile activePage={page} onNavigate={(p) => { setPage(p); setMobileMenuOpen(false); }} />
-          </div>
+      {/* Achievements & Badges Modal */}
+      <AchievementsBadgesModal
+        isOpen={achievementsModalOpen}
+        onClose={() => setAchievementsModalOpen(false)}
+      />
+
+      {/* Mobile sidebar overlay (always mounted for smooth transitions) */}
+      <div
+        className={`fixed inset-0 z-50 md:hidden transition-all duration-300 ease-in-out ${
+          mobileMenuOpen ? 'visible' : 'invisible pointer-events-none'
+        }`}
+      >
+        <div
+          className={`absolute inset-0 bg-black/40 backdrop-blur-[2px] transition-opacity duration-300 ease-in-out ${
+            mobileMenuOpen ? 'opacity-100' : 'opacity-0'
+          }`}
+          onClick={() => setMobileMenuOpen(false)}
+        />
+        <div
+          className={`absolute left-0 top-0 bottom-0 w-[280px] shadow-2xl overflow-hidden transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ${
+            mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
+        >
+          <Sidebar mobile activePage={page} onNavigate={(p) => { setPage(p); setMobileMenuOpen(false); }} />
         </div>
-      )}
+      </div>
 
       {/* Desktop sidebar (hidden on mobile via aside className) */}
       <Sidebar activePage={page} onNavigate={setPage} />
@@ -976,14 +1313,13 @@ export default function App() {
                 >
                   Welcome Back, User! 👋
                 </h1>
-                <div className="flex items-center gap-2">
-                  <CalendarIcon />
-                  <p className="font-['Inter:Regular',sans-serif] text-[14px] text-[#4a5565]">Here's what's happening with your performance today</p>
-                </div>
+                <p className="font-['Inter:Regular',sans-serif] text-[14px] text-[#4a5565]">
+                  Here's what's happening with your performance today
+                </p>
               </div>
 
-              {/* 1. Achievements compact */}
-              <AchievementsCardMobile />
+              {/* 1. Achievements & Trophies bar (above tabs and below greeting) */}
+              <AchievementsCardMobile onOpenModal={() => setAchievementsModalOpen(true)} />
 
               {/* 2. Stat cards 3-column row */}
               <div className="flex flex-row gap-2">
@@ -1000,15 +1336,15 @@ export default function App() {
                   mini
                   label="Out"
                   value="650"
-                  trend="down"
-                  trendValue="-8%"
+                  trend="up"
+                  trendValue="+8%"
                   icon={<OutArrowIcon />}
                   gradientAngle="154deg"
                 />
                 <StatCard
                   mini
                   label="Balance"
-                  value="1,683"
+                  value="1,683 Pts"
                   trend="up"
                   trendValue="+2%"
                   icon={<DollarIcon />}
@@ -1018,8 +1354,8 @@ export default function App() {
 
               {/* 3. Ranking + Balance row */}
               <div className="flex gap-3">
-                <RankingCard />
-                <ProgramBalanceCard />
+                <RankingCard mobileBottomLink />
+                <ProgramBalanceCard mobileBottomLink />
               </div>
 
               {/* 4. Products Catalog */}
@@ -1081,7 +1417,7 @@ export default function App() {
                   circleLeft="230px"
                 />
                 <div className="flex-none">
-                  <AchievementsCard />
+                  <AchievementsCard onOpenModal={() => setAchievementsModalOpen(true)} />
                 </div>
               </div>
 
