@@ -3,7 +3,7 @@ import svgPaths from '../imports/svg-opovdd5lqn';
 import WallPage from './WallPage';
 import logoImg from './assets/logo.png';
 
-type Page = 'dashboard' | 'wall';
+type Page = 'dashboard' | 'wall' | 'results' | 'user-ranking';
 
 function RibbonMedalIcon({ size = 20, color = '#F54900' }: { size?: number; color?: string }) {
   return (
@@ -302,6 +302,15 @@ function GoldTrophyIcon() {
   );
 }
 
+function ResultsIcon({ color = '#364153' }: { color?: string }) {
+  return (
+    <svg fill="none" viewBox="0 0 24 24" width="22" height="22" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+      <polyline points="16 7 22 7 22 13" />
+    </svg>
+  );
+}
+
 // ─── Sidebar ─────────────────────────────────────────────────────────────────
 
 interface NavItemProps {
@@ -365,6 +374,8 @@ function Sidebar({ activePage, onNavigate, mobile }: SidebarProps) {
           <div className="flex flex-col gap-0.5">
             <NavItem icon={<DashboardIcon color={activePage === 'dashboard' ? 'white' : '#364153'} />} label="Dashboard" active={activePage === 'dashboard'} onClick={() => onNavigate('dashboard')} />
             <NavItem icon={<WallIcon color={activePage === 'wall' ? 'white' : '#364153'} />} label="Wall" active={activePage === 'wall'} onClick={() => onNavigate('wall')} />
+            <NavItem icon={<ResultsIcon color={activePage === 'results' ? 'white' : '#364153'} />} label="Results" active={activePage === 'results'} onClick={() => onNavigate('results')} />
+            <NavItem icon={<RankingIcon color={activePage === 'user-ranking' ? 'white' : '#364153'} />} label="User Ranking" active={activePage === 'user-ranking'} onClick={() => onNavigate('user-ranking')} />
             <NavItem icon={<CatalogIcon />} label="Catalog" />
           </div>
         </div>
@@ -1254,6 +1265,383 @@ function BudgetTable() {
   );
 }
 
+// ─── Results Page ─────────────────────────────────────────────────────────────
+
+const RESULTS_DATA = [
+  { id: 1, program: 'Aogsto', type: 'Primary', start: '21, Agosto 2026', end: '21, Agosto 2026' },
+  { id: 2, program: 'Aogsto', type: 'Primary', start: '21, Agosto 2026', end: '21, Agosto 2026' },
+  { id: 3, program: 'Aogsto', type: 'Primary', start: '21, Agosto 2026', end: '21, Agosto 2026' },
+  { id: 4, program: 'Aogsto', type: 'Primary', start: '21, Agosto 2026', end: '21, Agosto 2026' },
+  { id: 5, program: 'Aogsto', type: 'Purchase', start: '21, Agosto 2026', end: '21, Agosto 2026' },
+  { id: 6, program: '01-01', type: 'Purchase', start: '21, Agosto 2026', end: '21, Agosto 2026' },
+];
+
+const RESULTS_PER_PAGE_MOBILE = 6;
+const RESULTS_PER_PAGE_DESKTOP = 4;
+const TOTAL_PAGES = 5;
+
+function ResultsPage() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [tableOptionsOpen, setTableOptionsOpen] = useState(false);
+
+  return (
+    <main className="flex-1 overflow-y-auto px-4 md:px-6 py-5 md:py-6 flex flex-col gap-4 md:gap-5">
+      {/* Page heading — same gradient style as WallPage */}
+      <div className="flex flex-col gap-1 md:gap-2">
+        <h1
+          className="font-['Inter:Regular',sans-serif] text-[28px] md:text-[38px] leading-tight bg-clip-text text-transparent"
+          style={{ backgroundImage: "linear-gradient(90deg, rgb(16,24,40) 0%, rgb(245,73,0) 100%)" }}
+        >
+          Results
+        </h1>
+        <div className="flex items-center gap-2">
+          <CalendarIcon color="#4A5565" />
+          <p className="font-['Inter:Regular',sans-serif] text-[14px] md:text-[17px] text-[#4a5565]">Here are your results</p>
+        </div>
+      </div>
+
+      {/* Orange header bar — same height/style as WallPage banner */}
+      <div
+        className="relative rounded-[14px] overflow-hidden shadow-[0px_10px_16px_-3px_rgba(0,0,0,0.08)] flex items-center gap-3 px-4 md:px-6 h-[64px] md:h-[72px] shrink-0"
+        style={{ backgroundImage: "linear-gradient(to right, #ff6900, #f54900, #ca3500)" }}
+      >
+        <ResultsIcon color="white" />
+        <span className="font-['Inter:Regular',sans-serif] text-[15px] md:text-[17px] text-white">Program Results</span>
+        <div className="ml-auto relative">
+          <button
+            onClick={() => setTableOptionsOpen(!tableOptionsOpen)}
+            className="flex items-center gap-2 bg-white/20 hover:bg-white/30 px-3 md:px-4 py-1 md:py-1.5 rounded-[10px] md:rounded-[11px] cursor-pointer transition-all duration-150"
+          >
+            <span className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[13px] md:text-[14px] text-white">Table Options</span>
+            <ChevronDownIcon />
+          </button>
+          {tableOptionsOpen && (
+            <div className="absolute right-0 top-full mt-2 w-[180px] bg-white rounded-[12px] shadow-lg border border-[#ffd6a7] py-1 z-20">
+              {['Export CSV', 'Export PDF', 'Filter Columns', 'Sort'].map((opt) => (
+                <button key={opt} className="w-full text-left px-4 py-2.5 text-[13px] text-[#364153] font-['Inter:Regular',sans-serif] hover:bg-orange-50 hover:text-[#f54900] transition-colors duration-100 cursor-pointer">
+                  {opt}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Results table card — same style as RecentTransactionsCard */}
+      <div
+        className="rounded-[15px] border border-[#ffd6a7] drop-shadow-[0px_10px_8px_rgba(0,0,0,0.1)] cursor-default"
+        style={{ backgroundImage: "linear-gradient(138deg, rgb(255,247,237) 0%, rgb(255,255,255) 100%)" }}
+      >
+        {/* Card sub-header */}
+        <div className="flex items-center justify-between px-5 pt-5 pb-3">
+          <div className="flex items-center gap-2.5">
+            <ResultsIcon color="#f54900" />
+            <span className="font-['Inter:Regular',sans-serif] text-[17px] text-[#0a0a0a]">Here are your results</span>
+          </div>
+          <button className="font-['Inter:Regular',sans-serif] text-[13px] text-[#f54900] hover:underline cursor-pointer transition-colors duration-150">View All →</button>
+        </div>
+
+        {/* Inner table container — same as RecentTransactionsCard */}
+        <div className="mx-4 md:mx-5 mb-4 rounded-[11px] border border-[#ffedd4] shadow-[0px_1px_3px_rgba(0,0,0,0.06)] overflow-hidden">
+          {/* Desktop table */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-gradient-to-r from-[#ff6900] to-[#f54900]">
+                  <th className="text-left px-5 py-3 font-['Inter:Bold',sans-serif] text-[13px] text-white uppercase tracking-[0.04em]">Program Name</th>
+                  <th className="text-left px-5 py-3 font-['Inter:Bold',sans-serif] text-[13px] text-white uppercase tracking-[0.04em]">Type</th>
+                  <th className="text-left px-5 py-3 font-['Inter:Bold',sans-serif] text-[13px] text-white uppercase tracking-[0.04em]">Start Date</th>
+                  <th className="text-left px-5 py-3 font-['Inter:Bold',sans-serif] text-[13px] text-white uppercase tracking-[0.04em]">End Date</th>
+                  <th className="text-left px-5 py-3 font-['Inter:Bold',sans-serif] text-[13px] text-white uppercase tracking-[0.04em]">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {RESULTS_DATA.slice(0, RESULTS_PER_PAGE_DESKTOP).map((row, idx) => (
+                  <tr
+                    key={row.id}
+                    className={`${idx < RESULTS_PER_PAGE_DESKTOP - 1 ? 'border-b border-[#f3f4f6]' : ''} hover:bg-orange-50/50 transition-colors duration-100 cursor-pointer`}
+                  >
+                    <td className="px-5 py-3.5 font-['Inter:Regular',sans-serif] text-[13px] text-[#364153]">{row.program}</td>
+                    <td className="px-5 py-3.5 font-['Inter:Regular',sans-serif] text-[13px] text-[#4a5565]">{row.type}</td>
+                    <td className="px-5 py-3.5 font-['Inter:Regular',sans-serif] text-[13px] text-[#4a5565]">{row.start}</td>
+                    <td className="px-5 py-3.5 font-['Inter:Regular',sans-serif] text-[13px] text-[#4a5565]">{row.end}</td>
+                    <td className="px-5 py-3.5">
+                      <button className="font-['Inter:Regular',sans-serif] text-[13px] text-[#f54900] hover:underline cursor-pointer">View</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile table — 3 columns */}
+          <div className="md:hidden overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-gradient-to-r from-[#ff6900] to-[#f54900]">
+                  <th className="text-left px-3 py-3 font-['Inter:Bold',sans-serif] text-[11px] text-white uppercase tracking-[0.04em]">Program Name</th>
+                  <th className="text-left px-3 py-3 font-['Inter:Bold',sans-serif] text-[11px] text-white uppercase tracking-[0.04em]">Type</th>
+                  <th className="text-left px-3 py-3 font-['Inter:Bold',sans-serif] text-[11px] text-white uppercase tracking-[0.04em]">Start Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {RESULTS_DATA.slice(0, RESULTS_PER_PAGE_MOBILE).map((row, idx) => (
+                  <tr key={row.id} className={`${idx < RESULTS_PER_PAGE_MOBILE - 1 ? 'border-b border-[#f3f4f6]' : ''} hover:bg-orange-50/50 transition-colors duration-100`}>
+                    <td className="px-3 py-3.5 font-['Inter:Regular',sans-serif] text-[11px] text-[#364153]">{row.program === 'Aogsto' ? '01-01' : row.program}</td>
+                    <td className="px-3 py-3.5 font-['Inter:Regular',sans-serif] text-[11px] text-[#4a5565]">Purchase</td>
+                    <td className="px-3 py-3.5 font-['Inter:Regular',sans-serif] text-[11px] text-[#4a5565]">{row.start}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Pagination — same style as RecentTransactionsCard */}
+        <div className="flex items-center justify-between px-5 pb-4">
+          <button
+            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            className="flex items-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed px-3 py-1.5 rounded-[11px] hover:bg-orange-50 cursor-pointer transition-colors duration-150 active:bg-gray-200"
+          >
+            <ChevronLeft />
+            <span className="font-['Inter:Regular',sans-serif] text-[13px] text-[#4a5565]">Prev</span>
+          </button>
+          <div className="border border-black/10 rounded-[9px] px-3 py-1">
+            <span className="font-['Inter:Medium',sans-serif] text-[13px] text-[#0a0a0a]">{currentPage}/{TOTAL_PAGES}</span>
+          </div>
+          <button
+            onClick={() => setCurrentPage(p => Math.min(TOTAL_PAGES, p + 1))}
+            disabled={currentPage === TOTAL_PAGES}
+            className="flex items-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-orange-50 px-3 py-1.5 rounded-[11px] cursor-pointer transition-colors duration-150 active:bg-gray-200"
+          >
+            <span className="font-['Inter:Regular',sans-serif] text-[13px] text-[#4a5565]">Next</span>
+            <ChevronRight />
+          </button>
+        </div>
+      </div>
+    </main>
+  );
+}
+
+// ─── User Rankings Page ───────────────────────────────────────────────────────
+
+const RANKINGS_DATA = [
+  { id: 1, currentRank: 1, prevRank: '-', userId: '6776j', userName: 'user1', achievement: '25%' },
+  { id: 2, currentRank: 2, prevRank: '-', userId: 'tyyt678', userName: 'user3', achievement: '25%' },
+  { id: 3, currentRank: 3, prevRank: '-', userId: 'gh6677', userName: 'uskhan', achievement: '-' },
+  { id: 4, currentRank: 4, prevRank: '2', userId: 'ak8821', userName: 'alex99', achievement: '50%' },
+  { id: 5, currentRank: 5, prevRank: '6', userId: 'mr1092', userName: 'maria_l', achievement: '75%' },
+  { id: 6, currentRank: 6, prevRank: '4', userId: 'cr4490', userName: 'carlos_r', achievement: '10%' },
+];
+
+function UserRankingsPage() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+
+  return (
+    <main className="flex-1 overflow-y-auto px-4 md:px-6 py-5 md:py-6 flex flex-col gap-4 md:gap-5">
+      {/* Page heading — matches design system & Results / WallPage */}
+      <div className="flex flex-col gap-1 md:gap-2">
+        <h1
+          className="font-['Inter:Regular',sans-serif] text-[28px] md:text-[38px] leading-tight bg-clip-text text-transparent"
+          style={{ backgroundImage: "linear-gradient(90deg, rgb(16,24,40) 0%, rgb(245,73,0) 100%)" }}
+        >
+          User Rankings
+        </h1>
+        <div className="flex items-center gap-2">
+          <CalendarIcon color="#4A5565" />
+          <p className="font-['Inter:Regular',sans-serif] text-[14px] md:text-[17px] text-[#4a5565]">Here are the current user rankings and achievements</p>
+        </div>
+      </div>
+
+      {/* Top Banner Bar — same height/style as Results / WallPage banner */}
+      <div
+        className="relative rounded-[14px] overflow-hidden shadow-[0px_10px_16px_-3px_rgba(0,0,0,0.08)] flex items-center gap-3 px-4 md:px-6 h-[64px] md:h-[72px] shrink-0"
+        style={{ backgroundImage: "linear-gradient(to right, #ff6900, #f54900, #ca3500)" }}
+      >
+        <RankingIcon color="white" />
+        <span className="font-['Inter:Regular',sans-serif] text-[15px] md:text-[17px] text-white">User Rankings</span>
+        <div className="ml-auto relative">
+          <button
+            onClick={() => setFiltersOpen(!filtersOpen)}
+            className="flex items-center gap-2 bg-white/20 hover:bg-white/30 px-3 md:px-4 py-1 md:py-1.5 rounded-[10px] md:rounded-[11px] cursor-pointer transition-all duration-150"
+          >
+            <span className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[13px] md:text-[14px] text-white">Filters</span>
+            <ChevronDownIcon />
+          </button>
+          {filtersOpen && (
+            <div className="absolute right-0 top-full mt-2 w-[180px] bg-white rounded-[12px] shadow-lg border border-[#ffd6a7] py-1 z-20">
+              {['All Users', 'Top 10', 'Top 50', 'By Achievement', 'Active Only'].map((opt) => (
+                <button
+                  key={opt}
+                  className="w-full text-left px-4 py-2.5 text-[13px] text-[#364153] font-['Inter:Regular',sans-serif] hover:bg-orange-50 hover:text-[#f54900] transition-colors duration-100 cursor-pointer"
+                >
+                  {opt}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* User Rankings Card — consistent warm gradient and borders */}
+      <div
+        className="rounded-[15px] border border-[#ffd6a7] drop-shadow-[0px_10px_8px_rgba(0,0,0,0.1)] cursor-default"
+        style={{ backgroundImage: "linear-gradient(138deg, rgb(255,247,237) 0%, rgb(255,255,255) 100%)" }}
+      >
+        {/* Card Title Header */}
+        <div className="flex items-center justify-between px-5 pt-5 pb-3">
+          <div className="flex items-center gap-2.5">
+            <RankingIcon color="#f54900" />
+            <span className="font-['Inter:Regular',sans-serif] text-[17px] text-[#0a0a0a]">User Rankings</span>
+          </div>
+          <button className="font-['Inter:Regular',sans-serif] text-[13px] text-[#f54900] hover:underline cursor-pointer transition-colors duration-150">
+            View All →
+          </button>
+        </div>
+
+        {/* Inner Table Container */}
+        <div className="mx-4 md:mx-5 mb-4 rounded-[11px] border border-[#ffedd4] shadow-[0px_1px_3px_rgba(0,0,0,0.06)] overflow-hidden">
+          {/* Desktop Table (md+) */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-gradient-to-r from-[#ff6900] to-[#f54900]">
+                  <th className="text-center px-5 py-3 font-['Inter:Bold',sans-serif] text-[13px] text-white uppercase tracking-[0.04em] border-r border-white/20">
+                    CURRENT RANK
+                  </th>
+                  <th className="text-center px-5 py-3 font-['Inter:Bold',sans-serif] text-[13px] text-white uppercase tracking-[0.04em] border-r border-white/20">
+                    PREVIOUS RANK
+                  </th>
+                  <th className="text-center px-5 py-3 font-['Inter:Bold',sans-serif] text-[13px] text-white uppercase tracking-[0.04em] border-r border-white/20">
+                    USER ID
+                  </th>
+                  <th className="text-center px-5 py-3 font-['Inter:Bold',sans-serif] text-[13px] text-white uppercase tracking-[0.04em] border-r border-white/20">
+                    USER NAME
+                  </th>
+                  <th className="text-center px-5 py-3 font-['Inter:Bold',sans-serif] text-[13px] text-white uppercase tracking-[0.04em]">
+                    ACHIEVEMENT
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {RANKINGS_DATA.map((row, idx) => (
+                  <tr
+                    key={row.id}
+                    className={`${idx < RANKINGS_DATA.length - 1 ? 'border-b border-[#f3f4f6]' : ''} hover:bg-orange-50/50 transition-colors duration-100 cursor-pointer`}
+                  >
+                    <td className="px-5 py-4 text-center font-['Inter:Regular',sans-serif] text-[14px] text-[#364153]">
+                      {row.currentRank}
+                    </td>
+                    <td className="px-5 py-4 text-center font-['Inter:Regular',sans-serif] text-[14px] text-[#4a5565]">
+                      {row.prevRank}
+                    </td>
+                    <td className="px-5 py-4 text-center font-['Inter:Regular',sans-serif] text-[14px] text-[#364153] font-mono">
+                      {row.userId}
+                    </td>
+                    <td className="px-5 py-4 text-center font-['Inter:Regular',sans-serif] text-[14px] text-[#364153]">
+                      {row.userName}
+                    </td>
+                    <td className="px-5 py-4 flex items-center justify-center">
+                      {row.achievement === '-' ? (
+                        <span className="text-[#4a5565] font-['Inter:Regular',sans-serif] text-[14px]">-</span>
+                      ) : (
+                        <div className="w-[120px] h-[26px] rounded-[7px] border border-[#e53935] overflow-hidden flex items-center relative bg-white">
+                          <div
+                            className="h-full bg-gradient-to-r from-[#e53935] to-[#d32f2f]"
+                            style={{ width: row.achievement }}
+                          />
+                          <span className="absolute inset-0 flex items-center justify-center font-['Inter:Bold',sans-serif] text-[12px] font-bold text-[#1f2937]">
+                            {row.achievement}
+                          </span>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Table */}
+          <div className="md:hidden overflow-x-auto">
+            <table className="w-full min-w-[340px]">
+              <thead>
+                <tr className="bg-gradient-to-r from-[#ff6900] to-[#f54900]">
+                  <th className="text-center px-3 py-3 font-['Inter:Bold',sans-serif] text-[11px] text-white uppercase tracking-[0.04em] border-r border-white/20">
+                    RANK
+                  </th>
+                  <th className="text-center px-3 py-3 font-['Inter:Bold',sans-serif] text-[11px] text-white uppercase tracking-[0.04em] border-r border-white/20">
+                    USER
+                  </th>
+                  <th className="text-center px-3 py-3 font-['Inter:Bold',sans-serif] text-[11px] text-white uppercase tracking-[0.04em]">
+                    ACHIEVEMENT
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {RANKINGS_DATA.map((row, idx) => (
+                  <tr
+                    key={row.id}
+                    className={`${idx < RANKINGS_DATA.length - 1 ? 'border-b border-[#f3f4f6]' : ''} hover:bg-orange-50/50 transition-colors duration-100`}
+                  >
+                    <td className="px-3 py-3.5 text-center font-['Inter:Regular',sans-serif] text-[12px] text-[#364153]">
+                      #{row.currentRank}
+                    </td>
+                    <td className="px-3 py-3.5 text-center font-['Inter:Regular',sans-serif] text-[12px] text-[#364153]">
+                      <div className="font-medium text-[#101828]">{row.userName}</div>
+                      <div className="text-[10px] text-[#6a7282] font-mono">{row.userId}</div>
+                    </td>
+                    <td className="px-3 py-3.5 flex items-center justify-center">
+                      {row.achievement === '-' ? (
+                        <span className="text-[#4a5565] font-['Inter:Regular',sans-serif] text-[12px]">-</span>
+                      ) : (
+                        <div className="w-[84px] h-[22px] rounded-[6px] border border-[#e53935] overflow-hidden flex items-center relative bg-white">
+                          <div
+                            className="h-full bg-gradient-to-r from-[#e53935] to-[#d32f2f]"
+                            style={{ width: row.achievement }}
+                          />
+                          <span className="absolute inset-0 flex items-center justify-center font-['Inter:Bold',sans-serif] text-[10px] font-bold text-[#1f2937]">
+                            {row.achievement}
+                          </span>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Pagination — matches theme exactly */}
+        <div className="flex items-center justify-between px-5 pb-4">
+          <button
+            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            className="flex items-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed px-3 py-1.5 rounded-[11px] hover:bg-orange-50 cursor-pointer transition-colors duration-150 active:bg-gray-200"
+          >
+            <ChevronLeft />
+            <span className="font-['Inter:Regular',sans-serif] text-[13px] text-[#4a5565]">Prev</span>
+          </button>
+          <div className="border border-black/10 rounded-[9px] px-3 py-1">
+            <span className="font-['Inter:Medium',sans-serif] text-[13px] text-[#0a0a0a]">{currentPage}/5</span>
+          </div>
+          <button
+            onClick={() => setCurrentPage(p => Math.min(5, p + 1))}
+            disabled={currentPage === 5}
+            className="flex items-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-orange-50 px-3 py-1.5 rounded-[11px] cursor-pointer transition-colors duration-150 active:bg-gray-200"
+          >
+            <span className="font-['Inter:Regular',sans-serif] text-[13px] text-[#4a5565]">Next</span>
+            <ChevronRight />
+          </button>
+        </div>
+      </div>
+    </main>
+  );
+}
+
 // ─── Main App ─────────────────────────────────────────────────────────────────
 
 export default function App() {
@@ -1301,6 +1689,10 @@ export default function App() {
         {/* Scrollable content */}
         {page === 'wall' ? (
           <WallPage />
+        ) : page === 'results' ? (
+          <ResultsPage />
+        ) : page === 'user-ranking' ? (
+          <UserRankingsPage />
         ) : (
           <>
             {/* ── MOBILE layout (hidden on md+) ─────────────────────────────── */}
