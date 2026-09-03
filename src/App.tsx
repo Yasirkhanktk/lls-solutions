@@ -3,7 +3,7 @@ import svgPaths from '../imports/svg-opovdd5lqn';
 import WallPage from './WallPage';
 import logoImg from './assets/logo.png';
 
-type Page = 'dashboard' | 'wall' | 'results' | 'user-ranking';
+type Page = 'dashboard' | 'wall' | 'results' | 'user-ranking' | 'badges' | 'gift-cards';
 
 function RibbonMedalIcon({ size = 20, color = '#F54900' }: { size?: number; color?: string }) {
   return (
@@ -311,6 +311,27 @@ function ResultsIcon({ color = '#364153' }: { color?: string }) {
   );
 }
 
+function GiftCardIcon({ color = '#364153' }: { color?: string }) {
+  return (
+    <svg fill="none" viewBox="0 0 24 24" width="22" height="22" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="20 12 20 22 4 22 4 12" />
+      <rect x="2" y="7" width="20" height="5" rx="1" />
+      <line x1="12" y1="22" x2="12" y2="7" />
+      <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z" />
+      <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" />
+    </svg>
+  );
+}
+
+function TicketIcon({ color = '#F54900' }: { color?: string }) {
+  return (
+    <svg fill="none" viewBox="0 0 24 24" width="20" height="20" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 9a3 3 0 0 1 0 6v5a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5a3 3 0 0 1 0-6V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v5z" />
+      <line x1="9" y1="2" x2="9" y2="22" strokeDasharray="2 2" />
+    </svg>
+  );
+}
+
 // ─── Sidebar ─────────────────────────────────────────────────────────────────
 
 interface NavItemProps {
@@ -376,6 +397,8 @@ function Sidebar({ activePage, onNavigate, mobile }: SidebarProps) {
             <NavItem icon={<WallIcon color={activePage === 'wall' ? 'white' : '#364153'} />} label="Wall" active={activePage === 'wall'} onClick={() => onNavigate('wall')} />
             <NavItem icon={<ResultsIcon color={activePage === 'results' ? 'white' : '#364153'} />} label="Results" active={activePage === 'results'} onClick={() => onNavigate('results')} />
             <NavItem icon={<RankingIcon color={activePage === 'user-ranking' ? 'white' : '#364153'} />} label="User Ranking" active={activePage === 'user-ranking'} onClick={() => onNavigate('user-ranking')} />
+            <NavItem icon={<RibbonMedalIcon size={20} color={activePage === 'badges' ? 'white' : '#364153'} />} label="Badges" active={activePage === 'badges'} onClick={() => onNavigate('badges')} />
+            <NavItem icon={<GiftCardIcon color={activePage === 'gift-cards' ? 'white' : '#364153'} />} label="Gift Cards" active={activePage === 'gift-cards'} onClick={() => onNavigate('gift-cards')} />
             <NavItem icon={<CatalogIcon />} label="Catalog" />
           </div>
         </div>
@@ -1347,7 +1370,7 @@ function ResultsPage() {
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-gradient-to-r from-[#ff6900] to-[#f54900]">
+                <tr style={{ backgroundImage: "linear-gradient(to right, #ff6900, #f54900, #ca3500)" }}>
                   <th className="text-left px-5 py-3 font-['Inter:Bold',sans-serif] text-[13px] text-white uppercase tracking-[0.04em]">Program Name</th>
                   <th className="text-left px-5 py-3 font-['Inter:Bold',sans-serif] text-[13px] text-white uppercase tracking-[0.04em]">Type</th>
                   <th className="text-left px-5 py-3 font-['Inter:Bold',sans-serif] text-[13px] text-white uppercase tracking-[0.04em]">Start Date</th>
@@ -1378,7 +1401,7 @@ function ResultsPage() {
           <div className="md:hidden overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-gradient-to-r from-[#ff6900] to-[#f54900]">
+                <tr style={{ backgroundImage: "linear-gradient(to right, #ff6900, #f54900, #ca3500)" }}>
                   <th className="text-left px-3 py-3 font-['Inter:Bold',sans-serif] text-[11px] text-white uppercase tracking-[0.04em]">Program Name</th>
                   <th className="text-left px-3 py-3 font-['Inter:Bold',sans-serif] text-[11px] text-white uppercase tracking-[0.04em]">Type</th>
                   <th className="text-left px-3 py-3 font-['Inter:Bold',sans-serif] text-[11px] text-white uppercase tracking-[0.04em]">Start Date</th>
@@ -1507,7 +1530,7 @@ function UserRankingsPage() {
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-gradient-to-r from-[#ff6900] to-[#f54900]">
+                <tr style={{ backgroundImage: "linear-gradient(to right, #ff6900, #f54900, #ca3500)" }}>
                   <th className="text-center px-5 py-3 font-['Inter:Bold',sans-serif] text-[13px] text-white uppercase tracking-[0.04em] border-r border-white/20">
                     CURRENT RANK
                   </th>
@@ -1547,10 +1570,10 @@ function UserRankingsPage() {
                       {row.achievement === '-' ? (
                         <span className="text-[#4a5565] font-['Inter:Regular',sans-serif] text-[14px]">-</span>
                       ) : (
-                        <div className="w-[120px] h-[26px] rounded-[7px] border border-[#e53935] overflow-hidden flex items-center relative bg-white">
+                        <div className="w-[120px] h-[26px] rounded-[7px] border border-[#ff8d28]/60 overflow-hidden flex items-center relative bg-white">
                           <div
-                            className="h-full bg-gradient-to-r from-[#e53935] to-[#d32f2f]"
-                            style={{ width: row.achievement }}
+                            className="h-full"
+                            style={{ width: row.achievement, backgroundImage: "linear-gradient(to right, #ff6900, #f54900, #ca3500)" }}
                           />
                           <span className="absolute inset-0 flex items-center justify-center font-['Inter:Bold',sans-serif] text-[12px] font-bold text-[#1f2937]">
                             {row.achievement}
@@ -1568,7 +1591,7 @@ function UserRankingsPage() {
           <div className="md:hidden overflow-x-auto">
             <table className="w-full min-w-[340px]">
               <thead>
-                <tr className="bg-gradient-to-r from-[#ff6900] to-[#f54900]">
+                <tr style={{ backgroundImage: "linear-gradient(to right, #ff6900, #f54900, #ca3500)" }}>
                   <th className="text-center px-3 py-3 font-['Inter:Bold',sans-serif] text-[11px] text-white uppercase tracking-[0.04em] border-r border-white/20">
                     RANK
                   </th>
@@ -1597,10 +1620,10 @@ function UserRankingsPage() {
                       {row.achievement === '-' ? (
                         <span className="text-[#4a5565] font-['Inter:Regular',sans-serif] text-[12px]">-</span>
                       ) : (
-                        <div className="w-[84px] h-[22px] rounded-[6px] border border-[#e53935] overflow-hidden flex items-center relative bg-white">
+                        <div className="w-[84px] h-[22px] rounded-[6px] border border-[#ff8d28]/60 overflow-hidden flex items-center relative bg-white">
                           <div
-                            className="h-full bg-gradient-to-r from-[#e53935] to-[#d32f2f]"
-                            style={{ width: row.achievement }}
+                            className="h-full"
+                            style={{ width: row.achievement, backgroundImage: "linear-gradient(to right, #ff6900, #f54900, #ca3500)" }}
                           />
                           <span className="absolute inset-0 flex items-center justify-center font-['Inter:Bold',sans-serif] text-[10px] font-bold text-[#1f2937]">
                             {row.achievement}
@@ -1637,6 +1660,465 @@ function UserRankingsPage() {
             <ChevronRight />
           </button>
         </div>
+      </div>
+    </main>
+  );
+}
+
+// ─── Badges Page ──────────────────────────────────────────────────────────────
+
+const PAGE_BADGES = [
+  {
+    id: '1',
+    title: 'Top Performer',
+    category: 'Performance',
+    description: 'Achieved #1 sales rank among 2,210 team members',
+    icon: '🥇',
+    unlocked: true,
+    date: 'Aug 28, 2026',
+    points: '+250 Pts',
+    tier: 'Gold',
+  },
+  {
+    id: '2',
+    title: 'Quota Crusher',
+    category: 'Milestone',
+    description: 'Exceeded monthly variable targets by 15%+',
+    icon: '🎯',
+    unlocked: true,
+    date: 'Aug 24, 2026',
+    points: '+180 Pts',
+    tier: 'Gold',
+  },
+  {
+    id: '3',
+    title: 'Consistency Master',
+    category: 'Streak',
+    description: 'Maintained 95%+ score for 6 consecutive months',
+    icon: '🏆',
+    unlocked: true,
+    date: 'Aug 15, 2026',
+    points: '+300 Pts',
+    tier: 'Gold',
+  },
+  {
+    id: '4',
+    title: 'Speed Demon',
+    category: 'Velocity',
+    description: 'Processed and dispatched 120 orders in under 48 hours',
+    icon: '⚡',
+    unlocked: true,
+    date: 'Aug 10, 2026',
+    points: '+150 Pts',
+    tier: 'Silver',
+  },
+  {
+    id: '5',
+    title: 'Wall Inspiration',
+    category: 'Community',
+    description: 'Accumulated 31k+ likes and 5k+ comments on Wall of Fame',
+    icon: '🌟',
+    unlocked: true,
+    date: 'Aug 02, 2026',
+    points: '+200 Pts',
+    tier: 'Silver',
+  },
+  {
+    id: '6',
+    title: 'Budget Guardian',
+    category: 'Accuracy',
+    description: 'Zero variance across all variable balance audits for 90 days',
+    icon: '🛡️',
+    unlocked: true,
+    date: 'Jul 20, 2026',
+    points: '+120 Pts',
+    tier: 'Bronze',
+  },
+  {
+    id: '7',
+    title: 'Platinum Legend',
+    category: 'Tier Status',
+    description: 'Earn 2,000 total program balance points',
+    icon: '👑',
+    unlocked: false,
+    progress: '1,683 / 2,000 Pts (84%)',
+    points: '+500 Pts',
+    tier: 'Platinum',
+  },
+  {
+    id: '8',
+    title: 'Diamond Hall of Fame',
+    category: 'Ultimate',
+    description: 'Hold the #1 member ranking for 3 consecutive quarters',
+    icon: '💎',
+    unlocked: false,
+    progress: '2 / 3 Quarters (67%)',
+    points: '+1,000 Pts',
+    tier: 'Diamond',
+  },
+];
+
+function BadgesPage() {
+  const [filter, setFilter] = useState<'all' | 'unlocked' | 'locked'>('all');
+  const [filtersOpen, setFiltersOpen] = useState(false);
+
+  const filteredBadges = PAGE_BADGES.filter((b) => {
+    if (filter === 'unlocked') return b.unlocked;
+    if (filter === 'locked') return !b.unlocked;
+    return true;
+  });
+
+  return (
+    <main className="flex-1 overflow-y-auto px-4 md:px-6 py-5 md:py-6 flex flex-col gap-4 md:gap-5">
+      {/* Page Heading */}
+      <div className="flex flex-col gap-1 md:gap-2">
+        <h1
+          className="font-['Inter:Regular',sans-serif] text-[28px] md:text-[38px] leading-tight bg-clip-text text-transparent"
+          style={{ backgroundImage: "linear-gradient(90deg, rgb(16,24,40) 0%, rgb(245,73,0) 100%)" }}
+        >
+          Badges
+        </h1>
+        <div className="flex items-center gap-2">
+          <CalendarIcon color="#4A5565" />
+          <p className="font-['Inter:Regular',sans-serif] text-[14px] md:text-[17px] text-[#4a5565]">
+            Here are your achievements and earned badges
+          </p>
+        </div>
+      </div>
+
+      {/* Top Banner Bar */}
+      <div
+        className="relative rounded-[14px] overflow-hidden shadow-[0px_10px_16px_-3px_rgba(0,0,0,0.08)] flex items-center gap-3 px-4 md:px-6 h-[64px] md:h-[72px] shrink-0"
+        style={{ backgroundImage: "linear-gradient(to right, #ff6900, #f54900, #ca3500)" }}
+      >
+        <RibbonMedalIcon size={24} color="white" />
+        <span className="font-['Inter:Regular',sans-serif] text-[15px] md:text-[17px] text-white">Badges & Honors</span>
+        <div className="ml-auto relative">
+          <button
+            onClick={() => setFiltersOpen(!filtersOpen)}
+            className="flex items-center gap-2 bg-white/20 hover:bg-white/30 px-3 md:px-4 py-1 md:py-1.5 rounded-[10px] md:rounded-[11px] cursor-pointer transition-all duration-150"
+          >
+            <span className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[13px] md:text-[14px] text-white">Options</span>
+            <ChevronDownIcon />
+          </button>
+          {filtersOpen && (
+            <div className="absolute right-0 top-full mt-2 w-[180px] bg-white rounded-[12px] shadow-lg border border-[#ffd6a7] py-1 z-20">
+              {['All Badges', 'Gold Tier Only', 'Recent First', 'Highest Points'].map((opt) => (
+                <button
+                  key={opt}
+                  className="w-full text-left px-4 py-2.5 text-[13px] text-[#364153] font-['Inter:Regular',sans-serif] hover:bg-orange-50 hover:text-[#f54900] transition-colors duration-100 cursor-pointer"
+                >
+                  {opt}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Badges Overview Card */}
+      <div
+        className="rounded-[15px] border border-[#ffd6a7] drop-shadow-[0px_10px_8px_rgba(0,0,0,0.1)] p-5 md:p-6 flex flex-col gap-5 cursor-default"
+        style={{ backgroundImage: "linear-gradient(138deg, rgb(255,247,237) 0%, rgb(255,255,255) 100%)" }}
+      >
+        {/* Tier Progress Header Banner */}
+        <div
+          className="rounded-[16px] p-4 sm:p-5 border border-[#ffd6a7] shadow-[0px_4px_12px_rgba(255,105,0,0.08)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+          style={{ backgroundImage: "linear-gradient(135deg, rgb(255,247,237) 0%, rgb(255,255,255) 100%)" }}
+        >
+          <div className="flex items-center gap-3.5">
+            <div
+              className="size-[52px] rounded-[15px] flex items-center justify-center text-white shadow-md shadow-orange-500/20 shrink-0"
+              style={{ backgroundImage: "linear-gradient(to right, #ff6900, #f54900, #ca3500)" }}
+            >
+              <RibbonMedalIcon size={30} color="white" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-['Inter:Bold',sans-serif] text-[22px] bg-clip-text text-transparent font-bold" style={{ backgroundImage: "linear-gradient(90deg, #ff6900, #f54900, #ca3500)" }}>
+                  Gold Tier
+                </span>
+                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-orange-100 text-orange-700">Level 4</span>
+              </div>
+              <p className="font-['Inter:Regular',sans-serif] text-[13px] text-[#4a5565] mt-0.5">
+                Elite Performance Award · 1,683 Total Points
+              </p>
+            </div>
+          </div>
+
+          {/* Next tier progress */}
+          <div className="w-full sm:w-[220px] bg-white/90 rounded-[14px] p-3 border border-[#ffd6a7]/70 shadow-xs">
+            <div className="flex justify-between text-[12px] font-medium text-[#4a5565] mb-1.5">
+              <span>Next: Platinum</span>
+              <span className="text-[#f54900] font-bold">84%</span>
+            </div>
+            <div className="w-full h-2.5 bg-orange-100 rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full"
+                style={{ width: '84%', backgroundImage: "linear-gradient(to right, #ff6900, #f54900, #ca3500)" }}
+              />
+            </div>
+            <span className="text-[11px] text-[#99a1af] block text-right mt-1">317 pts needed</span>
+          </div>
+        </div>
+
+        {/* Filter Tabs */}
+        <div className="flex items-center gap-2 p-1.5 bg-gray-100/80 rounded-[14px] text-[13px]">
+          <button
+            onClick={() => setFilter('all')}
+            className={`flex-1 py-2 rounded-[10px] font-medium transition-all cursor-pointer ${
+              filter === 'all'
+                ? 'bg-white text-[#f54900] shadow-sm font-semibold'
+                : 'text-[#4a5565] hover:text-[#0a0a0a]'
+            }`}
+          >
+            All Badges ({PAGE_BADGES.length})
+          </button>
+          <button
+            onClick={() => setFilter('unlocked')}
+            className={`flex-1 py-2 rounded-[10px] font-medium transition-all cursor-pointer ${
+              filter === 'unlocked'
+                ? 'bg-white text-[#f54900] shadow-sm font-semibold'
+                : 'text-[#4a5565] hover:text-[#0a0a0a]'
+            }`}
+          >
+            Unlocked (6)
+          </button>
+          <button
+            onClick={() => setFilter('locked')}
+            className={`flex-1 py-2 rounded-[10px] font-medium transition-all cursor-pointer ${
+              filter === 'locked'
+                ? 'bg-white text-[#f54900] shadow-sm font-semibold'
+                : 'text-[#4a5565] hover:text-[#0a0a0a]'
+            }`}
+          >
+            In Progress (2)
+          </button>
+        </div>
+
+        {/* Badges Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+          {filteredBadges.map((badge) => (
+            <div
+              key={badge.id}
+              className={`p-4 rounded-[16px] border transition-all ${
+                badge.unlocked
+                  ? 'border-[#ffd6a7]/80 bg-white/90 shadow-xs hover:shadow-md hover:border-[#f54900]/50'
+                  : 'border-gray-200/80 bg-gray-50/60 opacity-80'
+              }`}
+            >
+              <div className="flex items-start gap-3.5">
+                <div
+                  className={`size-[48px] rounded-[14px] flex items-center justify-center text-[24px] shrink-0 ${
+                    badge.unlocked
+                      ? 'bg-orange-100/70 border border-orange-200/60'
+                      : 'bg-gray-200 text-gray-400 grayscale'
+                  }`}
+                >
+                  {badge.icon}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-1.5">
+                    <h4 className="font-['Inter:Medium',sans-serif] text-[15px] font-semibold text-[#0a0a0a] truncate">
+                      {badge.title}
+                    </h4>
+                    <span
+                      className="text-[11px] font-bold px-2 py-0.5 rounded-full text-white shrink-0"
+                      style={{ backgroundImage: "linear-gradient(to right, #ff6900, #f54900, #ca3500)" }}
+                    >
+                      {badge.points}
+                    </span>
+                  </div>
+                  <p className="font-['Inter:Regular',sans-serif] text-[12.5px] text-[#6a7282] mt-1 leading-snug">
+                    {badge.description}
+                  </p>
+                  <div className="mt-3 flex items-center justify-between text-[11.5px] pt-2 border-t border-gray-100">
+                    {badge.unlocked ? (
+                      <span className="inline-flex items-center gap-1 text-emerald-600 font-medium">
+                        ✓ Earned {badge.date}
+                      </span>
+                    ) : (
+                      <span className="text-amber-600 font-medium">
+                        ⏳ {badge.progress}
+                      </span>
+                    )}
+                    <span className="text-[10.5px] text-[#4a5565] px-2 py-0.5 rounded-md bg-orange-50 border border-orange-100 font-medium">
+                      {badge.tier}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </main>
+  );
+}
+
+// ─── Gift Cards Page ──────────────────────────────────────────────────────────
+
+interface RedeemedGiftCard {
+  id: string;
+  code: string;
+  points: number;
+  date: string;
+  name: string;
+}
+
+function GiftCardsPage() {
+  const [code, setCode] = useState('');
+  const [redeemedCards, setRedeemedCards] = useState<RedeemedGiftCard[]>([]);
+  const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+  const handleRedeem = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const cleanCode = code.trim().toUpperCase();
+    if (!cleanCode) return;
+
+    if (redeemedCards.some((c) => c.code === cleanCode)) {
+      setFeedback({ type: 'error', message: 'This gift card code has already been redeemed.' });
+      return;
+    }
+
+    const newCard: RedeemedGiftCard = {
+      id: Date.now().toString(),
+      code: cleanCode,
+      points: 250,
+      date: 'Today, Just now',
+      name: 'Reward Voucher',
+    };
+
+    setRedeemedCards([newCard, ...redeemedCards]);
+    setCode('');
+    setFeedback({ type: 'success', message: `Successfully claimed +250 points with code ${cleanCode}!` });
+  };
+
+  return (
+    <main className="flex-1 overflow-y-auto px-4 md:px-6 py-5 md:py-6 flex flex-col gap-4 md:gap-5">
+      {/* Page Heading */}
+      <div className="flex flex-col gap-1 md:gap-2">
+        <h1
+          className="font-['Inter:Regular',sans-serif] text-[28px] md:text-[38px] leading-tight bg-clip-text text-transparent flex items-center gap-2.5"
+          style={{ backgroundImage: "linear-gradient(90deg, rgb(16,24,40) 0%, rgb(245,73,0) 100%)" }}
+        >
+          <GiftCardIcon color="#f54900" />
+          Gift Cards
+        </h1>
+        <p className="font-['Inter:Regular',sans-serif] text-[14px] md:text-[17px] text-[#4a5565]">
+          Redeem the gift cards you've received.
+        </p>
+      </div>
+
+      {/* Top Banner Bar */}
+      <div
+        className="relative rounded-[14px] overflow-hidden shadow-[0px_10px_16px_-3px_rgba(0,0,0,0.08)] flex items-center gap-3 px-4 md:px-6 h-[64px] md:h-[72px] shrink-0"
+        style={{ backgroundImage: "linear-gradient(to right, #ff6900, #f54900, #ca3500)" }}
+      >
+        <GiftCardIcon color="white" />
+        <span className="font-['Inter:Regular',sans-serif] text-[15px] md:text-[17px] text-white">Gift Card Center</span>
+        <div className="ml-auto bg-white/20 px-3 md:px-4 py-1 md:py-1.5 rounded-[10px] md:rounded-[11px]">
+          <span className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[13px] md:text-[14px] text-white">
+            {redeemedCards.length > 0 ? `${redeemedCards.length} Redeemed` : '0 Redeemed'}
+          </span>
+        </div>
+      </div>
+
+      {/* Card 1: Redeem a code */}
+      <div
+        className="rounded-[15px] border border-[#ffd6a7] drop-shadow-[0px_10px_8px_rgba(0,0,0,0.1)] p-5 md:p-6 flex flex-col gap-4 cursor-default"
+        style={{ backgroundImage: "linear-gradient(138deg, rgb(255,247,237) 0%, rgb(255,255,255) 100%)" }}
+      >
+        {/* Title row */}
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2">
+            <TicketIcon color="#f54900" />
+            <h2 className="font-['Inter:Bold',sans-serif] text-[18px] md:text-[20px] text-[#0a0a0a] font-bold">
+              Redeem a code
+            </h2>
+          </div>
+          <p className="font-['Inter:Regular',sans-serif] text-[13px] md:text-[14px] text-[#4a5565]">
+            Enter your secret gift card code to claim your points.
+          </p>
+        </div>
+
+        {/* Input & Action */}
+        <form onSubmit={handleRedeem} className="flex flex-col sm:flex-row items-stretch gap-3 mt-1">
+          <input
+            type="text"
+            value={code}
+            onChange={(e) => { setCode(e.target.value); setFeedback(null); }}
+            placeholder="ENTER YOUR CODE"
+            className="flex-1 bg-white border border-[#ffd6a7] rounded-[12px] px-4 py-3.5 font-['Inter:Regular',sans-serif] text-[15px] text-[#101828] placeholder:text-[#99a1af] outline-none focus:border-[#f54900] focus:ring-2 focus:ring-orange-200 transition-all uppercase tracking-wider"
+          />
+          <button
+            type="submit"
+            disabled={!code.trim()}
+            className="px-7 py-3.5 rounded-[12px] font-['Inter:Medium',sans-serif] text-[15px] text-white shadow-md transition-all duration-150 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-95 active:scale-98 shrink-0 flex items-center justify-center font-medium"
+            style={{ backgroundImage: "linear-gradient(to right, #ff6900, #f54900, #ca3500)" }}
+          >
+            Redeem
+          </button>
+        </form>
+
+        {feedback && (
+          <div className={`text-[13px] px-3.5 py-2 rounded-[10px] font-medium ${
+            feedback.type === 'success' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'
+          }`}>
+            {feedback.message}
+          </div>
+        )}
+      </div>
+
+      {/* Card 2: Your gift cards */}
+      <div
+        className="rounded-[15px] border border-[#ffd6a7] drop-shadow-[0px_10px_8px_rgba(0,0,0,0.1)] p-5 md:p-6 flex flex-col gap-4 cursor-default"
+        style={{ backgroundImage: "linear-gradient(138deg, rgb(255,247,237) 0%, rgb(255,255,255) 100%)" }}
+      >
+        <div className="flex items-center justify-between">
+          <h2 className="font-['Inter:Bold',sans-serif] text-[18px] md:text-[20px] text-[#0a0a0a] font-bold">
+            Your gift cards
+          </h2>
+          {redeemedCards.length > 0 && (
+            <span className="text-[13px] text-[#f54900] font-medium">
+              {redeemedCards.length} cards total
+            </span>
+          )}
+        </div>
+
+        {redeemedCards.length === 0 ? (
+          <div className="rounded-[13px] border border-dashed border-[#ffd6a7] bg-white/60 py-14 px-4 flex flex-col items-center justify-center text-center">
+            <GiftCardIcon color="#d1d5db" />
+            <p className="font-['Inter:Regular',sans-serif] text-[14px] md:text-[15px] text-[#99a1af] mt-2">
+              You don't have any gift cards yet.
+            </p>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {redeemedCards.map((c) => (
+              <div
+                key={c.id}
+                className="bg-white rounded-[14px] p-4 border border-[#ffd6a7]/80 flex items-center justify-between shadow-xs"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="size-[42px] rounded-[12px] bg-orange-100 flex items-center justify-center text-orange-600 shrink-0">
+                    <GiftCardIcon color="#f54900" />
+                  </div>
+                  <div>
+                    <div className="font-mono font-bold text-[14px] text-[#101828]">{c.code}</div>
+                    <div className="text-[12px] text-[#6a7282]">{c.date}</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-[13px] font-bold text-[#f54900]">+{c.points} Pts</span>
+                  <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-700">
+                    Claimed
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </main>
   );
@@ -1693,6 +2175,10 @@ export default function App() {
           <ResultsPage />
         ) : page === 'user-ranking' ? (
           <UserRankingsPage />
+        ) : page === 'badges' ? (
+          <BadgesPage />
+        ) : page === 'gift-cards' ? (
+          <GiftCardsPage />
         ) : (
           <>
             {/* ── MOBILE layout (hidden on md+) ─────────────────────────────── */}
