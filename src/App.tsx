@@ -1185,41 +1185,57 @@ function BudgetTable() {
 
       {/* Table container */}
       <div className="mx-4 md:mx-6 mb-4 rounded-[11px] border border-[#ffedd4] shadow-[0px_1px_3px_rgba(0,0,0,0.06)] overflow-x-auto">
-        {/* Header */}
-        <div className="grid grid-cols-[1.2fr_1.2fr_0.8fr_0.8fr_1.5fr_0.8fr] bg-gradient-to-r from-[#ff6900] to-[#f54900]">
-          {['VARIABLE NAME', 'PERIOD', 'TARGETS', 'RESULTS', 'ACHIEVEMENT', 'POINTS'].map(col => (
-            <div key={col} className="px-4 py-4">
-              <span className="font-['Inter:Medium',sans-serif] text-[13px] text-white tracking-[0.03em]">{col}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* Rows */}
-        {budgetRows.map((row, i) => (
-          <div
-            key={i}
-            className="grid grid-cols-[1.2fr_1.2fr_0.8fr_0.8fr_1.5fr_0.8fr] border-b border-[#f3f4f6] last:border-0 hover:bg-orange-50/40 transition-colors duration-100"
-          >
-            <div className="px-4 py-4">
-              <span className="font-['Inter:Regular',sans-serif] text-[17px] text-[#4a5565]">{row.variable}</span>
-            </div>
-            <div className="px-4 py-4">
-              <span className="font-['Inter:Regular',sans-serif] text-[14px] text-[#364153]">{row.period}</span>
-            </div>
-            <div className="px-4 py-4">
-              <span className="font-['Inter:Regular',sans-serif] text-[14px] text-[#364153]">{row.targets}</span>
-            </div>
-            <div className="px-4 py-4">
-              <span className="font-['Inter:Regular',sans-serif] text-[14px] text-[#364153]">{row.results}</span>
-            </div>
-            <div className="px-4 py-4">
-              <ProgressBar value={row.achievement} />
-            </div>
-            <div className="px-4 py-4">
-              <span className="font-['Inter:Regular',sans-serif] text-[14px] text-[#364153]">{row.points}</span>
-            </div>
-          </div>
-        ))}
+        <table className="w-full min-w-[620px] border-collapse">
+          <thead>
+            <tr style={{ backgroundImage: "linear-gradient(to right, #ff6900, #f54900, #ca3500)" }}>
+              <th className="text-left px-4 py-3.5 font-['Inter:Medium',sans-serif] text-[12px] md:text-[13px] text-white tracking-[0.03em] whitespace-nowrap">
+                VARIABLE NAME
+              </th>
+              <th className="text-left px-4 py-3.5 font-['Inter:Medium',sans-serif] text-[12px] md:text-[13px] text-white tracking-[0.03em] whitespace-nowrap">
+                PERIOD
+              </th>
+              <th className="text-left px-4 py-3.5 font-['Inter:Medium',sans-serif] text-[12px] md:text-[13px] text-white tracking-[0.03em] whitespace-nowrap">
+                TARGETS
+              </th>
+              <th className="text-left px-4 py-3.5 font-['Inter:Medium',sans-serif] text-[12px] md:text-[13px] text-white tracking-[0.03em] whitespace-nowrap">
+                RESULTS
+              </th>
+              <th className="text-left px-4 py-3.5 font-['Inter:Medium',sans-serif] text-[12px] md:text-[13px] text-white tracking-[0.03em] whitespace-nowrap min-w-[170px]">
+                ACHIEVEMENT
+              </th>
+              <th className="text-left px-4 py-3.5 font-['Inter:Medium',sans-serif] text-[12px] md:text-[13px] text-white tracking-[0.03em] whitespace-nowrap">
+                POINTS
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-white/50">
+            {budgetRows.map((row, i) => (
+              <tr
+                key={i}
+                className="border-b border-[#f3f4f6] last:border-0 hover:bg-orange-50/40 transition-colors duration-100"
+              >
+                <td className="px-4 py-3.5 font-['Inter:Regular',sans-serif] text-[15px] md:text-[17px] text-[#4a5565] whitespace-nowrap">
+                  {row.variable}
+                </td>
+                <td className="px-4 py-3.5 font-['Inter:Regular',sans-serif] text-[13px] md:text-[14px] text-[#364153] whitespace-nowrap">
+                  {row.period}
+                </td>
+                <td className="px-4 py-3.5 font-['Inter:Regular',sans-serif] text-[13px] md:text-[14px] text-[#364153] whitespace-nowrap">
+                  {row.targets}
+                </td>
+                <td className="px-4 py-3.5 font-['Inter:Regular',sans-serif] text-[13px] md:text-[14px] text-[#364153] whitespace-nowrap">
+                  {row.results}
+                </td>
+                <td className="px-4 py-3.5 min-w-[170px]">
+                  <ProgressBar value={row.achievement} />
+                </td>
+                <td className="px-4 py-3.5 font-['Inter:Regular',sans-serif] text-[13px] md:text-[14px] text-[#364153] whitespace-nowrap">
+                  {row.points}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
       {/* Pagination */}
@@ -1277,7 +1293,7 @@ function ResultsPage() {
 
       {/* Orange header bar — same height/style as WallPage banner */}
       <div
-        className="relative rounded-[14px] overflow-hidden shadow-[0px_10px_16px_-3px_rgba(0,0,0,0.08)] flex items-center gap-3 px-4 md:px-6 h-[64px] md:h-[72px] shrink-0"
+        className="relative z-30 rounded-[14px] shadow-[0px_10px_16px_-3px_rgba(0,0,0,0.08)] flex items-center gap-3 px-4 md:px-6 h-[64px] md:h-[72px] shrink-0"
         style={{ backgroundImage: "linear-gradient(to right, #ff6900, #f54900, #ca3500)" }}
       >
         <ResultsIcon color="white" />
@@ -1291,13 +1307,20 @@ function ResultsPage() {
             <ChevronDownIcon />
           </button>
           {tableOptionsOpen && (
-            <div className="absolute right-0 top-full mt-2 w-[180px] bg-white rounded-[12px] shadow-lg border border-[#ffd6a7] py-1 z-20">
-              {['Export CSV', 'Export PDF', 'Filter Columns', 'Sort'].map((opt) => (
-                <button key={opt} className="w-full text-left px-4 py-2.5 text-[13px] text-[#364153] font-['Inter:Regular',sans-serif] hover:bg-orange-50 hover:text-[#f54900] transition-colors duration-100 cursor-pointer">
-                  {opt}
-                </button>
-              ))}
-            </div>
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setTableOptionsOpen(false)} />
+              <div className="absolute right-0 top-full mt-2 w-[180px] bg-white rounded-[12px] shadow-2xl border border-[#ffd6a7] py-1 z-50">
+                {['Export CSV', 'Export PDF', 'Filter Columns', 'Sort'].map((opt) => (
+                  <button
+                    key={opt}
+                    onClick={() => setTableOptionsOpen(false)}
+                    className="w-full text-left px-4 py-2.5 text-[13px] text-[#364153] font-['Inter:Regular',sans-serif] hover:bg-orange-50 hover:text-[#f54900] transition-colors duration-100 cursor-pointer"
+                  >
+                    {opt}
+                  </button>
+                ))}
+              </div>
+            </>
           )}
         </div>
       </div>
@@ -1320,7 +1343,7 @@ function ResultsPage() {
         <div className="mx-4 md:mx-5 mb-4 rounded-[11px] border border-[#ffedd4] shadow-[0px_1px_3px_rgba(0,0,0,0.06)] overflow-hidden">
           {/* Desktop table */}
           <div className="hidden md:block overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-[560px]">
               <thead>
                 <tr style={{ backgroundImage: "linear-gradient(to right, #ff6900, #f54900, #ca3500)" }}>
                   <th className="text-left px-5 py-3 font-['Inter:Bold',sans-serif] text-[13px] text-white uppercase tracking-[0.04em]">Program Name</th>
@@ -1351,7 +1374,7 @@ function ResultsPage() {
 
           {/* Mobile table — 3 columns */}
           <div className="md:hidden overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-[340px]">
               <thead>
                 <tr style={{ backgroundImage: "linear-gradient(to right, #ff6900, #f54900, #ca3500)" }}>
                   <th className="text-left px-3 py-3 font-['Inter:Bold',sans-serif] text-[11px] text-white uppercase tracking-[0.04em]">Program Name</th>
@@ -1432,7 +1455,7 @@ function UserRankingsPage() {
 
       {/* Top Banner Bar — same height/style as Results / WallPage banner */}
       <div
-        className="relative rounded-[14px] overflow-hidden shadow-[0px_10px_16px_-3px_rgba(0,0,0,0.08)] flex items-center gap-3 px-4 md:px-6 h-[64px] md:h-[72px] shrink-0"
+        className="relative z-30 rounded-[14px] shadow-[0px_10px_16px_-3px_rgba(0,0,0,0.08)] flex items-center gap-3 px-4 md:px-6 h-[64px] md:h-[72px] shrink-0"
         style={{ backgroundImage: "linear-gradient(to right, #ff6900, #f54900, #ca3500)" }}
       >
         <RankingIcon color="white" />
@@ -1446,16 +1469,20 @@ function UserRankingsPage() {
             <ChevronDownIcon />
           </button>
           {filtersOpen && (
-            <div className="absolute right-0 top-full mt-2 w-[180px] bg-white rounded-[12px] shadow-lg border border-[#ffd6a7] py-1 z-20">
-              {['All Users', 'Top 10', 'Top 50', 'By Achievement', 'Active Only'].map((opt) => (
-                <button
-                  key={opt}
-                  className="w-full text-left px-4 py-2.5 text-[13px] text-[#364153] font-['Inter:Regular',sans-serif] hover:bg-orange-50 hover:text-[#f54900] transition-colors duration-100 cursor-pointer"
-                >
-                  {opt}
-                </button>
-              ))}
-            </div>
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setFiltersOpen(false)} />
+              <div className="absolute right-0 top-full mt-2 w-[180px] bg-white rounded-[12px] shadow-2xl border border-[#ffd6a7] py-1 z-50">
+                {['All Users', 'Top 10', 'Top 50', 'By Achievement', 'Active Only'].map((opt) => (
+                  <button
+                    key={opt}
+                    onClick={() => setFiltersOpen(false)}
+                    className="w-full text-left px-4 py-2.5 text-[13px] text-[#364153] font-['Inter:Regular',sans-serif] hover:bg-orange-50 hover:text-[#f54900] transition-colors duration-100 cursor-pointer"
+                  >
+                    {opt}
+                  </button>
+                ))}
+              </div>
+            </>
           )}
         </div>
       </div>
@@ -1480,7 +1507,7 @@ function UserRankingsPage() {
         <div className="mx-4 md:mx-5 mb-4 rounded-[11px] border border-[#ffedd4] shadow-[0px_1px_3px_rgba(0,0,0,0.06)] overflow-hidden">
           {/* Desktop Table (md+) */}
           <div className="hidden md:block overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-[560px]">
               <thead>
                 <tr style={{ backgroundImage: "linear-gradient(to right, #ff6900, #f54900, #ca3500)" }}>
                   <th className="text-center px-5 py-3 font-['Inter:Bold',sans-serif] text-[13px] text-white uppercase tracking-[0.04em] border-r border-white/20">
@@ -1663,7 +1690,7 @@ function BadgesPage() {
 
       {/* Top Banner Bar */}
       <div
-        className="relative rounded-[14px] overflow-hidden shadow-[0px_10px_16px_-3px_rgba(0,0,0,0.08)] flex items-center gap-3 px-4 md:px-6 h-[64px] md:h-[72px] shrink-0"
+        className="relative z-30 rounded-[14px] shadow-[0px_10px_16px_-3px_rgba(0,0,0,0.08)] flex items-center gap-3 px-4 md:px-6 h-[64px] md:h-[72px] shrink-0"
         style={{ backgroundImage: "linear-gradient(to right, #ff6900, #f54900, #ca3500)" }}
       >
         <RibbonMedalIcon size={24} color="white" />
@@ -1677,16 +1704,20 @@ function BadgesPage() {
             <ChevronDownIcon />
           </button>
           {filtersOpen && (
-            <div className="absolute right-0 top-full mt-2 w-[180px] bg-white rounded-[12px] shadow-lg border border-[#ffd6a7] py-1 z-20">
-              {['All Badges', 'Gold Tier Only', 'Recent First', 'Highest Points'].map((opt) => (
-                <button
-                  key={opt}
-                  className="w-full text-left px-4 py-2.5 text-[13px] text-[#364153] font-['Inter:Regular',sans-serif] hover:bg-orange-50 hover:text-[#f54900] transition-colors duration-100 cursor-pointer"
-                >
-                  {opt}
-                </button>
-              ))}
-            </div>
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setFiltersOpen(false)} />
+              <div className="absolute right-0 top-full mt-2 w-[180px] bg-white rounded-[12px] shadow-2xl border border-[#ffd6a7] py-1 z-50">
+                {['All Badges', 'Gold Tier Only', 'Recent First', 'Highest Points'].map((opt) => (
+                  <button
+                    key={opt}
+                    onClick={() => setFiltersOpen(false)}
+                    className="w-full text-left px-4 py-2.5 text-[13px] text-[#364153] font-['Inter:Regular',sans-serif] hover:bg-orange-50 hover:text-[#f54900] transition-colors duration-100 cursor-pointer"
+                  >
+                    {opt}
+                  </button>
+                ))}
+              </div>
+            </>
           )}
         </div>
       </div>
