@@ -1,3 +1,5 @@
+process.env.VITE_CONFIG_NATIVE_IGNORE_WARNING = 'true'
+
 import { defineConfig, type HtmlTagDescriptor, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
