@@ -392,10 +392,10 @@ function Sidebar({ activePage, onNavigate, mobile }: SidebarProps) {
     <aside className={`${mobile ? 'flex' : 'hidden md:flex'} w-[250px] flex-none flex-col bg-white border-r border-gray-200 shadow-[0px_20px_40px_rgba(0,0,0,0.08)] sticky top-0 h-screen overflow-hidden`}>
       {/* Logo header */}
       <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-gray-100">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 cursor-pointer select-none" onClick={() => onNavigate('dashboard')}>
           <LogoBox />
           <div className="flex flex-col">
-            <span className="font-['Inter:Regular',sans-serif] text-[17px] text-[#101828] leading-tight">Dashboard</span>
+            <span className="font-['Inter:Regular',sans-serif] text-[17px] text-[#101828] leading-tight hover:text-[#f54900] transition-colors">Dashboard</span>
             <span className="font-['Inter:Regular',sans-serif] text-[13px] text-[#f54900] leading-tight">Premium User</span>
           </div>
         </div>
@@ -453,6 +453,8 @@ function Sidebar({ activePage, onNavigate, mobile }: SidebarProps) {
 // ─── Mobile Header ───────────────────────────────────────────────────────────
 
 function MobileHeader({ onMenuOpen }: { onMenuOpen: () => void }) {
+  const nav = useNavigation();
+
   return (
     <header
       className="flex md:hidden sticky top-0 z-20 bg-white border-b border-gray-200 shadow-[0px_1px_3px_rgba(0,0,0,0.08)] items-center gap-3 px-4"
@@ -468,7 +470,9 @@ function MobileHeader({ onMenuOpen }: { onMenuOpen: () => void }) {
           <line x1="3" y1="16" x2="19" y2="16" />
         </svg>
       </button>
-      <LogoBox />
+      <div onClick={() => nav('dashboard')} className="cursor-pointer">
+        <LogoBox />
+      </div>
       <div className="flex-1" />
       <button className="flex items-center gap-1.5 bg-[#f9fafb] border border-[#e5e7eb] rounded-[11px] px-3 py-1.5 cursor-pointer hover:border-[#f54900] transition-all duration-150">
         <span className="font-['Inter:Regular',sans-serif] text-[14px] text-[#364153]">Spanish</span>
@@ -1008,6 +1012,8 @@ function RecentTransactionsCard() {
 // ─── Ranking & Program Balance ────────────────────────────────────────────────
 
 function RankingCard({ mobileBottomLink = false }: { mobileBottomLink?: boolean }) {
+  const nav = useNavigation();
+
   return (
     <div
       className="rounded-[15px] border border-[#ffd6a7] drop-shadow-[0px_10px_8px_rgba(0,0,0,0.1)] flex-1 py-4 px-4 md:py-5 md:px-5 cursor-default hover:shadow-[0px_12px_24px_rgba(255,105,0,0.12)] transition-shadow duration-200 flex flex-col justify-between"
@@ -1019,7 +1025,12 @@ function RankingCard({ mobileBottomLink = false }: { mobileBottomLink?: boolean 
           <span className="font-['Inter:Regular',sans-serif] text-[13.5px] md:text-[17px] text-[#0a0a0a] tracking-[-0.02em] truncate">Ranking Actual</span>
         </div>
         {!mobileBottomLink && (
-          <button className="font-['Inter:Regular',sans-serif] text-[12px] md:text-[13px] text-[#f54900] hover:underline cursor-pointer transition-colors duration-150 shrink-0">View All →</button>
+          <button
+            onClick={() => nav('user-ranking')}
+            className="font-['Inter:Regular',sans-serif] text-[12px] md:text-[13px] text-[#f54900] hover:underline cursor-pointer transition-colors duration-150 shrink-0"
+          >
+            View All →
+          </button>
         )}
       </div>
       <div className="text-center my-1">
@@ -1033,7 +1044,12 @@ function RankingCard({ mobileBottomLink = false }: { mobileBottomLink?: boolean 
       </div>
       {mobileBottomLink && (
         <div className="text-center mt-3 pt-1">
-          <button className="font-['Inter:Regular',sans-serif] text-[12px] text-[#f54900] hover:underline cursor-pointer transition-colors duration-150">View All →</button>
+          <button
+            onClick={() => nav('user-ranking')}
+            className="font-['Inter:Regular',sans-serif] text-[12px] text-[#f54900] hover:underline cursor-pointer transition-colors duration-150"
+          >
+            View All →
+          </button>
         </div>
       )}
     </div>
@@ -1041,6 +1057,8 @@ function RankingCard({ mobileBottomLink = false }: { mobileBottomLink?: boolean 
 }
 
 function ProgramBalanceCard({ mobileBottomLink = false }: { mobileBottomLink?: boolean }) {
+  const nav = useNavigation();
+
   return (
     <div
       className="rounded-[15px] border border-[#ffd6a7] drop-shadow-[0px_10px_8px_rgba(0,0,0,0.1)] flex-1 py-4 px-4 md:py-5 md:px-5 cursor-default hover:shadow-[0px_12px_24px_rgba(255,105,0,0.12)] transition-shadow duration-200 flex flex-col justify-between"
@@ -1052,7 +1070,12 @@ function ProgramBalanceCard({ mobileBottomLink = false }: { mobileBottomLink?: b
           <span className="font-['Inter:Regular',sans-serif] text-[13.5px] md:text-[17px] text-[#0a0a0a] tracking-[-0.02em] truncate">Program Balance</span>
         </div>
         {!mobileBottomLink && (
-          <button className="font-['Inter:Regular',sans-serif] text-[12px] md:text-[13px] text-[#f54900] hover:underline cursor-pointer transition-colors duration-150 shrink-0">View All →</button>
+          <button
+            onClick={() => nav('results')}
+            className="font-['Inter:Regular',sans-serif] text-[12px] md:text-[13px] text-[#f54900] hover:underline cursor-pointer transition-colors duration-150 shrink-0"
+          >
+            View All →
+          </button>
         )}
       </div>
       <div className="text-center my-1">
@@ -1066,7 +1089,12 @@ function ProgramBalanceCard({ mobileBottomLink = false }: { mobileBottomLink?: b
       </div>
       {mobileBottomLink && (
         <div className="text-center mt-3 pt-1">
-          <button className="font-['Inter:Regular',sans-serif] text-[12px] text-[#f54900] hover:underline cursor-pointer transition-colors duration-150">View All →</button>
+          <button
+            onClick={() => nav('results')}
+            className="font-['Inter:Regular',sans-serif] text-[12px] text-[#f54900] hover:underline cursor-pointer transition-colors duration-150"
+          >
+            View All →
+          </button>
         </div>
       )}
     </div>
@@ -1076,6 +1104,8 @@ function ProgramBalanceCard({ mobileBottomLink = false }: { mobileBottomLink?: b
 // ─── Product Card ─────────────────────────────────────────────────────────────
 
 function ProductCard() {
+  const nav = useNavigation();
+
   return (
     <div className="bg-white border border-[#ffd6a7] drop-shadow-[0px_4px_3px_rgba(0,0,0,0.06)] rounded-[15px] flex-1 min-w-0 cursor-default group hover:shadow-[0px_12px_24px_rgba(255,105,0,0.15)] transition-shadow duration-200">
       {/* Image area */}
@@ -1100,7 +1130,10 @@ function ProductCard() {
 
       {/* Redeem button */}
       <div className="px-3 md:px-4 pb-3 md:pb-4 pt-1 md:pt-2">
-        <button className="w-full h-[32px] md:h-[38px] rounded-[10px] bg-gradient-to-r from-[#ff6900] to-[#f54900] text-white font-['Inter:Regular',sans-serif] text-[13px] md:text-[15px] hover:from-[#e55d00] hover:to-[#d94000] transition-all duration-150 cursor-pointer active:scale-[0.98]">
+        <button
+          onClick={() => nav('catalog')}
+          className="w-full h-[32px] md:h-[38px] rounded-[10px] bg-gradient-to-r from-[#ff6900] to-[#f54900] text-white font-['Inter:Regular',sans-serif] text-[13px] md:text-[15px] hover:from-[#e55d00] hover:to-[#d94000] transition-all duration-150 cursor-pointer active:scale-[0.98]"
+        >
           Redeem
         </button>
       </div>
@@ -1111,6 +1144,7 @@ function ProductCard() {
 // ─── Products Catalog ─────────────────────────────────────────────────────────
 
 function ProductsCatalog() {
+  const nav = useNavigation();
   const [activeTab, setActiveTab] = useState<'gallery' | 'favorites'>('gallery');
 
   return (
@@ -1121,7 +1155,12 @@ function ProductsCatalog() {
           <ShoppingBagIcon />
           <span className="font-['Inter:Regular',sans-serif] text-[17px] text-[#0a0a0a] tracking-[-0.02em]">Products Catalog</span>
         </div>
-        <button className="font-['Inter:Regular',sans-serif] text-[17px] text-[#f54900] hover:underline cursor-pointer transition-colors duration-150">View All →</button>
+        <button
+          onClick={() => nav('catalog')}
+          className="font-['Inter:Regular',sans-serif] text-[17px] text-[#f54900] hover:underline cursor-pointer transition-colors duration-150"
+        >
+          View All →
+        </button>
       </div>
 
       {/* Tabs */}
@@ -1191,6 +1230,8 @@ function ProgressBar({ value }: { value: number }) {
 }
 
 function BudgetTable() {
+  const nav = useNavigation();
+
   return (
     <div
       className="rounded-[15px] border border-[#ffd6a7] drop-shadow-[0px_10px_8px_rgba(0,0,0,0.06)] cursor-default"
@@ -1204,7 +1245,12 @@ function BudgetTable() {
             Select period to view budget
           </span>
         </div>
-        <button className="font-['Inter:Regular',sans-serif] text-[17px] text-[#f54900] hover:underline cursor-pointer transition-colors duration-150 shrink-0 ml-4">View All →</button>
+        <button
+          onClick={() => nav('results')}
+          className="font-['Inter:Regular',sans-serif] text-[17px] text-[#f54900] hover:underline cursor-pointer transition-colors duration-150 shrink-0 ml-4"
+        >
+          View All →
+        </button>
       </div>
 
       {/* Table container */}
