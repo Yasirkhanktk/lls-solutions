@@ -3,7 +3,7 @@ import svgPaths from '../imports/svg-opovdd5lqn';
 import WallPage from './WallPage';
 import logoImg from './assets/logo.png';
 
-type Page = 'dashboard' | 'wall' | 'results' | 'user-ranking' | 'badges' | 'gift-cards';
+type Page = 'dashboard' | 'wall' | 'results' | 'user-ranking' | 'badges' | 'gift-cards' | 'catalog';
 
 function RibbonMedalIcon({ size = 20, color = '#F54900' }: { size?: number; color?: string }) {
   return (
@@ -42,10 +42,28 @@ function BellIcon() {
   );
 }
 
-function ChevronDownIcon() {
+function ChevronDownIcon({ color = '#4A5565', size = 16 }: { color?: string; size?: number }) {
   return (
-    <svg fill="none" viewBox="0 0 19 19" width="16" height="16" stroke="#4A5565" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+    <svg fill="none" viewBox="0 0 19 19" width={size} height={size} stroke={color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
       <path d={svgPaths.p2ff2d740} />
+    </svg>
+  );
+}
+
+function ChevronUpIcon({ color = '#4A5565', size = 16 }: { color?: string; size?: number }) {
+  return (
+    <svg fill="none" viewBox="0 0 19 19" width={size} height={size} stroke={color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 12l5.5-5.5L15 12" />
+    </svg>
+  );
+}
+
+function FilterLinesIcon({ color = '#4A5565', size = 18 }: { color?: string; size?: number }) {
+  return (
+    <svg fill="none" viewBox="0 0 18 18" width={size} height={size} stroke={color} strokeWidth="1.8" strokeLinecap="round">
+      <line x1="2" y1="5" x2="16" y2="5" />
+      <line x1="4.5" y1="9" x2="13.5" y2="9" />
+      <line x1="7" y1="13" x2="11" y2="13" />
     </svg>
   );
 }
@@ -399,7 +417,7 @@ function Sidebar({ activePage, onNavigate, mobile }: SidebarProps) {
             <NavItem icon={<RankingIcon color={activePage === 'user-ranking' ? 'white' : '#364153'} />} label="User Ranking" active={activePage === 'user-ranking'} onClick={() => onNavigate('user-ranking')} />
             <NavItem icon={<RibbonMedalIcon size={20} color={activePage === 'badges' ? 'white' : '#364153'} />} label="Badges" active={activePage === 'badges'} onClick={() => onNavigate('badges')} />
             <NavItem icon={<GiftCardIcon color={activePage === 'gift-cards' ? 'white' : '#364153'} />} label="Gift Cards" active={activePage === 'gift-cards'} onClick={() => onNavigate('gift-cards')} />
-            <NavItem icon={<CatalogIcon />} label="Catalog" />
+            <NavItem icon={<CatalogIcon color={activePage === 'catalog' ? 'white' : '#364153'} />} label="Catalog" active={activePage === 'catalog'} onClick={() => onNavigate('catalog')} />
           </div>
         </div>
         {/* PROGRAMS */}
@@ -654,83 +672,6 @@ function AchievementsBadgesModal({ isOpen, onClose }: AchievementsBadgesModalPro
       points: '+250 Pts',
       tier: 'Gold',
     },
-    {
-      id: '2',
-      title: 'Quota Crusher',
-      category: 'Milestone',
-      description: 'Exceeded monthly variable targets by 15%+',
-      icon: '🎯',
-      unlocked: true,
-      date: 'Aug 24, 2026',
-      points: '+180 Pts',
-      tier: 'Gold',
-    },
-    {
-      id: '3',
-      title: 'Consistency Master',
-      category: 'Streak',
-      description: 'Maintained 95%+ score for 6 consecutive months',
-      icon: '🏆',
-      unlocked: true,
-      date: 'Aug 15, 2026',
-      points: '+300 Pts',
-      tier: 'Gold',
-    },
-    {
-      id: '4',
-      title: 'Speed Demon',
-      category: 'Velocity',
-      description: 'Processed and dispatched 120 orders in under 48 hours',
-      icon: '⚡',
-      unlocked: true,
-      date: 'Aug 10, 2026',
-      points: '+150 Pts',
-      tier: 'Silver',
-    },
-    {
-      id: '5',
-      title: 'Wall Inspiration',
-      category: 'Community',
-      description: 'Accumulated 31k+ likes and 5k+ comments on Wall of Fame',
-      icon: '🌟',
-      unlocked: true,
-      date: 'Aug 02, 2026',
-      points: '+200 Pts',
-      tier: 'Silver',
-    },
-    {
-      id: '6',
-      title: 'Budget Guardian',
-      category: 'Accuracy',
-      description: 'Zero variance across all variable balance audits for 90 days',
-      icon: '🛡️',
-      unlocked: true,
-      date: 'Jul 20, 2026',
-      points: '+120 Pts',
-      tier: 'Bronze',
-    },
-    {
-      id: '7',
-      title: 'Platinum Legend',
-      category: 'Tier Status',
-      description: 'Earn 2,000 total program balance points',
-      icon: '👑',
-      unlocked: false,
-      progress: '1,683 / 2,000 Pts (84%)',
-      points: '+500 Pts',
-      tier: 'Platinum',
-    },
-    {
-      id: '8',
-      title: 'Diamond Hall of Fame',
-      category: 'Ultimate',
-      description: 'Hold the #1 member ranking for 3 consecutive quarters',
-      icon: '💎',
-      unlocked: false,
-      progress: '2 / 3 Quarters (67%)',
-      points: '+1,000 Pts',
-      tier: 'Diamond',
-    },
   ];
 
   const filteredBadges = badges.filter((b) => {
@@ -820,7 +761,7 @@ function AchievementsBadgesModal({ isOpen, onClose }: AchievementsBadgesModalPro
                 filter === 'unlocked' ? 'bg-white text-[#0a0a0a] shadow-xs' : 'text-[#6a7282] hover:text-[#0a0a0a]'
               }`}
             >
-              Unlocked (6)
+              Unlocked ({badges.filter((b) => b.unlocked).length})
             </button>
             <button
               onClick={() => setFilter('locked')}
@@ -828,7 +769,7 @@ function AchievementsBadgesModal({ isOpen, onClose }: AchievementsBadgesModalPro
                 filter === 'locked' ? 'bg-white text-[#0a0a0a] shadow-xs' : 'text-[#6a7282] hover:text-[#0a0a0a]'
               }`}
             >
-              In Progress (2)
+              In Progress ({badges.filter((b) => !b.unlocked).length})
             </button>
           </div>
 
@@ -837,18 +778,10 @@ function AchievementsBadgesModal({ isOpen, onClose }: AchievementsBadgesModalPro
             {filteredBadges.map((badge) => (
               <div
                 key={badge.id}
-                className={`p-3.5 rounded-[15px] border transition-all ${
-                  badge.unlocked
-                    ? 'border-orange-200/80 bg-gradient-to-br from-orange-50/40 via-white to-white shadow-xs'
-                    : 'border-gray-200 bg-gray-50/60 opacity-80'
-                }`}
+                className="p-3.5 rounded-[15px] border border-orange-200/80 bg-gradient-to-br from-orange-50/40 via-white to-white shadow-xs"
               >
                 <div className="flex items-start gap-3">
-                  <div
-                    className={`size-[42px] rounded-[12px] flex items-center justify-center text-[22px] shrink-0 ${
-                      badge.unlocked ? 'bg-orange-100/70 border border-orange-200/50' : 'bg-gray-200 text-gray-400 grayscale'
-                    }`}
-                  >
+                  <div className="size-[42px] rounded-[12px] flex items-center justify-center text-[22px] shrink-0 bg-orange-100/70 border border-orange-200/50">
                     {badge.icon}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -864,16 +797,10 @@ function AchievementsBadgesModal({ isOpen, onClose }: AchievementsBadgesModalPro
                       {badge.description}
                     </p>
                     <div className="mt-2 flex items-center justify-between text-[11px]">
-                      {badge.unlocked ? (
-                        <span className="inline-flex items-center gap-1 text-emerald-600 font-medium">
-                          ✓ Earned {badge.date}
-                        </span>
-                      ) : (
-                        <span className="text-amber-600 font-medium">
-                          ⏳ {badge.progress}
-                        </span>
-                      )}
-                      <span className="text-[10px] text-gray-400 px-1.5 py-0.5 rounded-sm bg-gray-100">
+                      <span className="inline-flex items-center gap-1 text-emerald-600 font-medium">
+                        ✓ Earned {badge.date}
+                      </span>
+                      <span className="text-[10px] text-orange-700 px-1.5 py-0.5 rounded-sm bg-orange-100 font-medium">
                         {badge.tier}
                       </span>
                     </div>
@@ -881,6 +808,31 @@ function AchievementsBadgesModal({ isOpen, onClose }: AchievementsBadgesModalPro
                 </div>
               </div>
             ))}
+
+            {/* Upcoming Badges Placeholder */}
+            {filter !== 'locked' && (
+              <div className="p-3.5 rounded-[15px] border border-dashed border-orange-200 bg-orange-50/30 flex items-center gap-3">
+                <div className="size-[42px] rounded-[12px] flex items-center justify-center text-[20px] shrink-0 bg-white border border-dashed border-orange-200 text-orange-400">
+                  🔒
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-['Inter:Medium',sans-serif] text-[13.5px] text-[#364153] font-medium">
+                    More Honors Coming Soon
+                  </h4>
+                  <p className="font-['Inter:Regular',sans-serif] text-[11.5px] text-[#6a7282] mt-0.5">
+                    Unlock additional trophies as you hit new performance goals.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {filteredBadges.length === 0 && filter === 'locked' && (
+              <div className="col-span-full py-8 text-center flex flex-col items-center gap-1.5">
+                <span className="text-2xl">🏆</span>
+                <p className="text-[13px] text-[#4a5565] font-medium">No badges in progress currently.</p>
+                <p className="text-[11.5px] text-[#99a1af]">You've claimed all active tier rewards!</p>
+              </div>
+            )}
           </div>
         </div>
 
@@ -1679,83 +1631,6 @@ const PAGE_BADGES = [
     points: '+250 Pts',
     tier: 'Gold',
   },
-  {
-    id: '2',
-    title: 'Quota Crusher',
-    category: 'Milestone',
-    description: 'Exceeded monthly variable targets by 15%+',
-    icon: '🎯',
-    unlocked: true,
-    date: 'Aug 24, 2026',
-    points: '+180 Pts',
-    tier: 'Gold',
-  },
-  {
-    id: '3',
-    title: 'Consistency Master',
-    category: 'Streak',
-    description: 'Maintained 95%+ score for 6 consecutive months',
-    icon: '🏆',
-    unlocked: true,
-    date: 'Aug 15, 2026',
-    points: '+300 Pts',
-    tier: 'Gold',
-  },
-  {
-    id: '4',
-    title: 'Speed Demon',
-    category: 'Velocity',
-    description: 'Processed and dispatched 120 orders in under 48 hours',
-    icon: '⚡',
-    unlocked: true,
-    date: 'Aug 10, 2026',
-    points: '+150 Pts',
-    tier: 'Silver',
-  },
-  {
-    id: '5',
-    title: 'Wall Inspiration',
-    category: 'Community',
-    description: 'Accumulated 31k+ likes and 5k+ comments on Wall of Fame',
-    icon: '🌟',
-    unlocked: true,
-    date: 'Aug 02, 2026',
-    points: '+200 Pts',
-    tier: 'Silver',
-  },
-  {
-    id: '6',
-    title: 'Budget Guardian',
-    category: 'Accuracy',
-    description: 'Zero variance across all variable balance audits for 90 days',
-    icon: '🛡️',
-    unlocked: true,
-    date: 'Jul 20, 2026',
-    points: '+120 Pts',
-    tier: 'Bronze',
-  },
-  {
-    id: '7',
-    title: 'Platinum Legend',
-    category: 'Tier Status',
-    description: 'Earn 2,000 total program balance points',
-    icon: '👑',
-    unlocked: false,
-    progress: '1,683 / 2,000 Pts (84%)',
-    points: '+500 Pts',
-    tier: 'Platinum',
-  },
-  {
-    id: '8',
-    title: 'Diamond Hall of Fame',
-    category: 'Ultimate',
-    description: 'Hold the #1 member ranking for 3 consecutive quarters',
-    icon: '💎',
-    unlocked: false,
-    progress: '2 / 3 Quarters (67%)',
-    points: '+1,000 Pts',
-    tier: 'Diamond',
-  },
 ];
 
 function BadgesPage() {
@@ -1882,7 +1757,7 @@ function BadgesPage() {
                 : 'text-[#4a5565] hover:text-[#0a0a0a]'
             }`}
           >
-            Unlocked (6)
+            Unlocked ({PAGE_BADGES.filter((b) => b.unlocked).length})
           </button>
           <button
             onClick={() => setFilter('locked')}
@@ -1892,7 +1767,7 @@ function BadgesPage() {
                 : 'text-[#4a5565] hover:text-[#0a0a0a]'
             }`}
           >
-            In Progress (2)
+            In Progress ({PAGE_BADGES.filter((b) => !b.unlocked).length})
           </button>
         </div>
 
@@ -1901,20 +1776,10 @@ function BadgesPage() {
           {filteredBadges.map((badge) => (
             <div
               key={badge.id}
-              className={`p-4 rounded-[16px] border transition-all ${
-                badge.unlocked
-                  ? 'border-[#ffd6a7]/80 bg-white/90 shadow-xs hover:shadow-md hover:border-[#f54900]/50'
-                  : 'border-gray-200/80 bg-gray-50/60 opacity-80'
-              }`}
+              className="p-4 rounded-[16px] border border-[#ffd6a7]/80 bg-white/90 shadow-xs hover:shadow-md hover:border-[#f54900]/50 transition-all"
             >
               <div className="flex items-start gap-3.5">
-                <div
-                  className={`size-[48px] rounded-[14px] flex items-center justify-center text-[24px] shrink-0 ${
-                    badge.unlocked
-                      ? 'bg-orange-100/70 border border-orange-200/60'
-                      : 'bg-gray-200 text-gray-400 grayscale'
-                  }`}
-                >
+                <div className="size-[48px] rounded-[14px] flex items-center justify-center text-[24px] shrink-0 bg-orange-100/70 border border-orange-200/60">
                   {badge.icon}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -1933,16 +1798,10 @@ function BadgesPage() {
                     {badge.description}
                   </p>
                   <div className="mt-3 flex items-center justify-between text-[11.5px] pt-2 border-t border-gray-100">
-                    {badge.unlocked ? (
-                      <span className="inline-flex items-center gap-1 text-emerald-600 font-medium">
-                        ✓ Earned {badge.date}
-                      </span>
-                    ) : (
-                      <span className="text-amber-600 font-medium">
-                        ⏳ {badge.progress}
-                      </span>
-                    )}
-                    <span className="text-[10.5px] text-[#4a5565] px-2 py-0.5 rounded-md bg-orange-50 border border-orange-100 font-medium">
+                    <span className="inline-flex items-center gap-1 text-emerald-600 font-medium">
+                      ✓ Earned {badge.date}
+                    </span>
+                    <span className="text-[10.5px] text-orange-700 px-2 py-0.5 rounded-md bg-orange-100 border border-orange-200 font-medium">
                       {badge.tier}
                     </span>
                   </div>
@@ -1950,6 +1809,37 @@ function BadgesPage() {
               </div>
             </div>
           ))}
+
+          {/* Placeholder for upcoming badges */}
+          {filter !== 'locked' && (
+            <div className="p-4 rounded-[16px] border-2 border-dashed border-orange-200/80 bg-white/60 flex items-center gap-3.5">
+              <div className="size-[48px] rounded-[14px] bg-orange-50 border border-dashed border-orange-200 flex items-center justify-center text-[22px] shrink-0 text-orange-400">
+                🔒
+              </div>
+              <div className="flex-1 min-w-0">
+                <h4 className="font-['Inter:Medium',sans-serif] text-[14.5px] font-semibold text-[#364153]">
+                  Upcoming Milestones
+                </h4>
+                <p className="font-['Inter:Regular',sans-serif] text-[12px] text-[#6a7282] mt-0.5">
+                  Keep hitting your sales and balance goals to unlock next tier trophies and honor badges.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {filteredBadges.length === 0 && filter === 'locked' && (
+            <div className="col-span-full py-12 flex flex-col items-center justify-center text-center gap-2">
+              <div className="size-12 rounded-full bg-orange-100 flex items-center justify-center text-[22px]">
+                ⭐
+              </div>
+              <h4 className="font-['Inter:Medium',sans-serif] text-[16px] font-semibold text-[#0a0a0a]">
+                No Badges Currently In Progress
+              </h4>
+              <p className="text-[13px] text-[#6a7282] max-w-[340px]">
+                All active achievements for this tier are unlocked. Check back soon for the next quarterly challenge!
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </main>
@@ -2124,6 +2014,392 @@ function GiftCardsPage() {
   );
 }
 
+// ─── Store Catalog Page ───────────────────────────────────────────────────────
+
+interface CatalogProduct {
+  id: string;
+  name: string;
+  pts: number;
+  rating: number;
+  category: string;
+}
+
+const CATALOG_PRODUCTS: CatalogProduct[] = [
+  { id: '1', name: 'Product 01', pts: 2000, rating: 4, category: 'Clothing' },
+  { id: '2', name: 'Product 01', pts: 2000, rating: 4, category: 'Clothing' },
+  { id: '3', name: 'Product 01', pts: 2000, rating: 4, category: 'Clothing' },
+  { id: '4', name: 'Product 01', pts: 2000, rating: 4, category: 'Clothing' },
+  { id: '5', name: 'Product 01', pts: 2000, rating: 4, category: 'Clothing' },
+  { id: '6', name: 'Product 01', pts: 2000, rating: 4, category: 'Clothing' },
+  { id: '7', name: 'Product 01', pts: 2000, rating: 4, category: 'Clothing' },
+  { id: '8', name: 'Product 01', pts: 2000, rating: 4, category: 'Clothing' },
+  { id: '9', name: 'Product 01', pts: 2000, rating: 4, category: 'Clothing' },
+  { id: '10', name: 'Product 01', pts: 2000, rating: 4, category: 'Clothing' },
+  { id: '11', name: 'Product 01', pts: 2000, rating: 4, category: 'Clothing' },
+  { id: '12', name: 'Product 01', pts: 2000, rating: 4, category: 'Clothing' },
+  { id: '13', name: 'Product 01', pts: 2000, rating: 4, category: 'Clothing' },
+  { id: '14', name: 'Product 01', pts: 2000, rating: 4, category: 'Clothing' },
+  { id: '15', name: 'Product 01', pts: 2000, rating: 4, category: 'Clothing' },
+];
+
+const FILTER_SECTIONS = [
+  {
+    title: 'Categories',
+    options: ['Clothing', 'Electronics', 'Accessories', 'Gift Cards', 'Home & Living', 'Footwear'],
+  },
+  {
+    title: 'Price Range',
+    options: ['Price', 'Under 500 pts', '500 - 1,000 pts', '1,000 - 2,000 pts', '2,000+ pts'],
+  },
+  {
+    title: 'Sort By',
+    options: ['Sort', 'Featured', 'Price: Low to High', 'Price: High to Low', 'Top Rated'],
+  },
+];
+
+function CatalogPage() {
+  const [activeFilters, setActiveFilters] = useState<string[]>(['Price', 'Sort', 'Clothing']);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [redeemProduct, setRedeemProduct] = useState<CatalogProduct | null>(null);
+  const [redeemSuccessMessage, setRedeemSuccessMessage] = useState<string | null>(null);
+
+  const toggleFilter = (filterName: string) => {
+    setActiveFilters((prev) =>
+      prev.includes(filterName) ? prev.filter((f) => f !== filterName) : [...prev, filterName]
+    );
+  };
+
+  const removeFilter = (filterName: string) => {
+    setActiveFilters((prev) => prev.filter((f) => f !== filterName));
+  };
+
+  const resetFilters = () => {
+    setActiveFilters([]);
+  };
+
+  const handleConfirmRedeem = (product: CatalogProduct) => {
+    setRedeemProduct(null);
+    setRedeemSuccessMessage(`Successfully requested redemption for ${product.name}!`);
+    setTimeout(() => {
+      setRedeemSuccessMessage(null);
+    }, 4000);
+  };
+
+  return (
+    <main className="flex-1 overflow-y-auto px-4 md:px-6 py-5 md:py-6 flex flex-col gap-4 md:gap-5">
+      {/* Redemption Confirmation Modal */}
+      {redeemProduct && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div className="absolute inset-0" onClick={() => setRedeemProduct(null)} />
+          <div className="relative bg-white w-full max-w-[420px] rounded-[22px] shadow-2xl border border-orange-100 p-6 flex flex-col items-center text-center z-10">
+            <div className="size-16 rounded-[18px] bg-orange-50 border border-orange-200/60 flex items-center justify-center mb-3 text-[#f54900]">
+              <svg fill="none" viewBox="0 0 48 48" width="38" height="38" stroke="#F54900" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="10" y="8" width="28" height="32" rx="5" />
+                <path d="M19 14c0 3.5 2 6 5 6s5-2.5 5-6" />
+              </svg>
+            </div>
+            <h3 className="font-['Inter:Bold',sans-serif] text-[20px] font-bold text-[#0a0a0a]">
+              Redeem {redeemProduct.name}?
+            </h3>
+            <p className="font-['Inter:Regular',sans-serif] text-[14px] text-[#4a5565] mt-2 leading-relaxed">
+              This will deduct <span className="font-semibold text-[#f54900]">{redeemProduct.pts} pts</span> from your rewards balance.
+            </p>
+            <div className="flex gap-3 w-full mt-6">
+              <button
+                onClick={() => setRedeemProduct(null)}
+                className="flex-1 py-2.5 rounded-[12px] border border-gray-200 text-[#4a5565] font-medium hover:bg-gray-50 cursor-pointer transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleConfirmRedeem(redeemProduct)}
+                className="flex-1 py-2.5 rounded-[12px] bg-gradient-to-r from-[#ff6900] to-[#f54900] text-white font-medium hover:from-[#e55d00] hover:to-[#d94000] cursor-pointer transition-colors shadow-xs"
+              >
+                Redeem Now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Success Toast */}
+      {redeemSuccessMessage && (
+        <div className="fixed bottom-6 right-6 z-50 bg-[#101828] text-white px-5 py-3.5 rounded-[14px] shadow-2xl flex items-center gap-3 border border-gray-700/80">
+          <span className="text-xl">🎁</span>
+          <div>
+            <p className="text-[14px] font-medium">{redeemSuccessMessage}</p>
+            <p className="text-[12px] text-gray-400">Your redemption order has been placed.</p>
+          </div>
+          <button
+            onClick={() => setRedeemSuccessMessage(null)}
+            className="ml-2 text-gray-400 hover:text-white cursor-pointer"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
+      {/* Page Heading */}
+      <div className="flex flex-col gap-1 md:gap-2">
+        <h1
+          className="font-['Inter:Regular',sans-serif] text-[28px] md:text-[38px] leading-tight text-[#101828]"
+        >
+          Store <span className="text-[#f54900] font-bold">Catalog.</span>
+        </h1>
+        <div className="flex items-center gap-2">
+          <CalendarIcon color="#4A5565" />
+          <p className="font-['Inter:Regular',sans-serif] text-[14px] md:text-[17px] text-[#4a5565]">
+            Here is your store for redemption{/* matches both mobile/desktop text */}
+          </p>
+        </div>
+      </div>
+
+      {/* Top Banner Bar */}
+      <div
+        className="relative rounded-[14px] overflow-hidden shadow-[0px_10px_16px_-3px_rgba(245,73,0,0.18)] flex items-center gap-3 px-4 md:px-6 h-[54px] md:h-[64px] shrink-0"
+        style={{ backgroundImage: "linear-gradient(to right, #ff6900, #f54900, #ca3500)" }}
+      >
+        <svg fill="none" viewBox="0 0 24 24" width="22" height="22" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+          <rect x="4" y="3" width="16" height="18" rx="3" />
+          <path d="M9 7c0 2 1.2 3.5 3 3.5s3-1.5 3-3.5" />
+        </svg>
+        <span className="font-['Inter:Medium',sans-serif] text-[15px] md:text-[17px] text-white font-medium">Store</span>
+      </div>
+
+      {/* Filters Bar Card (Both Desktop and Phone Responsive) */}
+      <div className="rounded-[15px] border border-[#e5e7eb] bg-white shadow-xs p-3.5 md:p-4 flex flex-col gap-3 transition-all duration-200">
+        {/* DESKTOP layout (md+) */}
+        <div className="hidden md:flex items-center justify-between gap-4">
+          {/* Left: Reset Filters + Chips */}
+          <div className="flex items-center gap-3 flex-wrap">
+            <button
+              onClick={resetFilters}
+              className="text-[#f54900] hover:underline font-['Inter:Regular',sans-serif] text-[14.5px] cursor-pointer shrink-0"
+            >
+              Reset Filters
+            </button>
+            <div className="flex items-center gap-2 flex-wrap">
+              {activeFilters.map((filter) => (
+                <span
+                  key={filter}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[10px] border border-[#ff8d28] bg-white text-[#f54900] text-[13.5px] font-medium shadow-2xs"
+                >
+                  <span>{filter}</span>
+                  <button
+                    onClick={() => removeFilter(filter)}
+                    className="hover:text-red-600 rounded-full p-0.5 cursor-pointer"
+                    title={`Remove ${filter}`}
+                  >
+                    ✕
+                  </button>
+                </span>
+              ))}
+              {activeFilters.length === 0 && (
+                <span className="text-[13px] text-[#99a1af] italic">No active filters</span>
+              )}
+            </div>
+          </div>
+
+          {/* Right: Filters toggle button */}
+          <button
+            onClick={() => setFiltersOpen(!filtersOpen)}
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-[10px] hover:bg-orange-50 border border-transparent hover:border-orange-200 transition-all cursor-pointer shrink-0"
+          >
+            <FilterLinesIcon color={filtersOpen ? '#f54900' : '#4A5565'} size={18} />
+            <span className={`font-['Inter:Medium',sans-serif] text-[14.5px] ${filtersOpen ? 'text-[#f54900] font-semibold' : 'text-[#364153]'}`}>
+              Filters
+            </span>
+            <div className={`transition-transform duration-300 ${filtersOpen ? 'rotate-180' : 'rotate-0'}`}>
+              <ChevronDownIcon color={filtersOpen ? '#f54900' : '#4A5565'} size={16} />
+            </div>
+          </button>
+        </div>
+
+        {/* MOBILE layout (<md) — Exactly matches the attached screenshot */}
+        <div className="flex md:hidden flex-col gap-3">
+          {/* Line 1: Filters on left, Chevron on right */}
+          <div
+            onClick={() => setFiltersOpen(!filtersOpen)}
+            className="flex items-center justify-between cursor-pointer py-0.5"
+          >
+            <div className="flex items-center gap-2">
+              <FilterLinesIcon color={filtersOpen ? '#f54900' : '#4A5565'} size={18} />
+              <span className={`font-['Inter:Medium',sans-serif] text-[15px] ${filtersOpen ? 'text-[#f54900] font-semibold' : 'text-[#0a0a0a]'}`}>
+                Filters
+              </span>
+            </div>
+            <div className={`transition-transform duration-300 ${filtersOpen ? 'rotate-180' : 'rotate-0'}`}>
+              <ChevronDownIcon color={filtersOpen ? '#f54900' : '#4A5565'} size={16} />
+            </div>
+          </div>
+
+          {/* Line 2: Reset Filters (underlined) + scrollable chips */}
+          <div className="flex items-center gap-2.5 overflow-x-auto pb-1 no-scrollbar">
+            <button
+              onClick={resetFilters}
+              className="text-[#f54900] underline underline-offset-3 font-['Inter:Regular',sans-serif] text-[13.5px] cursor-pointer shrink-0 whitespace-nowrap"
+            >
+              Reset Filters
+            </button>
+            <div className="flex items-center gap-2 shrink-0">
+              {activeFilters.map((filter) => (
+                <span
+                  key={filter}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[10px] border border-[#ff8d28] bg-white text-[#f54900] text-[13px] font-medium shadow-2xs shrink-0 whitespace-nowrap"
+                >
+                  <span>{filter}</span>
+                  <button
+                    onClick={() => removeFilter(filter)}
+                    className="hover:text-red-600 rounded-full p-0.5 cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                </span>
+              ))}
+              {activeFilters.length === 0 && (
+                <span className="text-[12px] text-[#99a1af] italic">None</span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Expandable / Drag-open Filter Model Panel with Smooth Open/Close Animation */}
+        <div
+          className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out ${
+            filtersOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 pointer-events-none'
+          }`}
+        >
+          <div className="overflow-hidden">
+            <div className="pt-3.5 mt-1 border-t border-gray-100 flex flex-col gap-4">
+              {/* Subtle drag handle representation */}
+              <div className="flex justify-center -mt-1">
+                <div className="w-10 h-1 rounded-full bg-gray-200" />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {FILTER_SECTIONS.map((sec) => (
+                  <div key={sec.title} className="flex flex-col gap-2 bg-orange-50/30 p-3 rounded-[12px] border border-orange-100/60">
+                    <span className="font-['Inter:Semi_Bold',sans-serif] text-[12.5px] font-semibold text-[#364153] uppercase tracking-wider">
+                      {sec.title}
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {sec.options.map((opt) => {
+                        const isSelected = activeFilters.includes(opt);
+                        return (
+                          <button
+                            key={opt}
+                            onClick={() => toggleFilter(opt)}
+                            className={`px-2.5 py-1 rounded-[8px] text-[12.5px] font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
+                              isSelected
+                                ? 'bg-gradient-to-r from-[#ff6900] to-[#f54900] text-white shadow-xs'
+                                : 'bg-white text-[#4a5565] border border-gray-200 hover:border-orange-300 hover:text-[#f54900]'
+                            }`}
+                          >
+                            {isSelected && <span>✓</span>}
+                            <span>{opt}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex items-center justify-between pt-1 pb-0.5 text-[13px]">
+                <span className="text-[#6a7282]">
+                  {activeFilters.length} filter{activeFilters.length === 1 ? '' : 's'} selected
+                </span>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={resetFilters}
+                    className="px-3 py-1.5 rounded-[9px] text-[#4a5565] hover:bg-gray-100 cursor-pointer font-medium transition-colors"
+                  >
+                    Clear All
+                  </button>
+                  <button
+                    onClick={() => setFiltersOpen(false)}
+                    className="px-4 py-1.5 rounded-[9px] bg-gradient-to-r from-[#ff6900] to-[#f54900] text-white font-medium hover:from-[#e55d00] hover:to-[#d94000] cursor-pointer shadow-xs transition-all"
+                  >
+                    Done
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Store Catalog Card */}
+      <div className="rounded-[16px] border border-[#ffd6a7]/80 bg-white shadow-xs p-4 sm:p-5 md:p-6 flex flex-col gap-4 md:gap-5 cursor-default">
+        {/* Header inside card */}
+        <div className="flex items-center gap-2.5">
+          <svg fill="none" viewBox="0 0 24 24" width="20" height="20" stroke="#F54900" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="4" y="3" width="16" height="18" rx="3" />
+            <path d="M9 7c0 2 1.2 3.5 3 3.5s3-1.5 3-3.5" />
+          </svg>
+          <span className="font-['Inter:Regular',sans-serif] text-[16px] md:text-[17px] text-[#0a0a0a] tracking-[-0.02em]">
+            <span className="hidden md:inline">Store Catalog</span>
+            <span className="inline md:hidden">Products Catalog</span>
+          </span>
+        </div>
+
+        {/* Products Grid: 5 columns on desktop, 2 columns on phone */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+          {CATALOG_PRODUCTS.map((prod, index) => (
+            <div
+              key={`${prod.id}-${index}`}
+              className="bg-white border border-[#ffd6a7]/80 rounded-[15px] p-2.5 sm:p-3 flex flex-col justify-between hover:shadow-[0px_8px_18px_rgba(245,73,0,0.12)] hover:border-[#ff9a3d] transition-all duration-200 group"
+            >
+              {/* Product Image Box */}
+              <div
+                className="w-full rounded-[12px] h-[130px] sm:h-[150px] md:h-[165px] flex items-center justify-center relative overflow-hidden shrink-0"
+                style={{ backgroundImage: "linear-gradient(147deg, rgb(255,247,237) 0%, rgb(255,237,212) 100%)" }}
+              >
+                {/* Center Shopping Bag Outline Icon */}
+                <svg fill="none" viewBox="0 0 48 48" width="50" height="50" stroke="#F54900" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" className="group-hover:scale-105 transition-transform duration-200">
+                  <rect x="10" y="8" width="28" height="32" rx="5" />
+                  <path d="M19 14c0 3.5 2 6 5 6s5-2.5 5-6" />
+                </svg>
+
+                {/* Floating points badge on bottom-left */}
+                <div className="absolute bottom-2.5 left-2.5 bg-white rounded-[8px] shadow-[0px_1px_3px_rgba(0,0,0,0.08)] px-2 sm:px-2.5 py-0.5">
+                  <span className="font-['Inter:Medium',sans-serif] text-[11.5px] sm:text-[13px] text-[#f54900] font-medium">
+                    {prod.pts} pts
+                  </span>
+                </div>
+              </div>
+
+              {/* Info: Title & Star Rating */}
+              <div className="pt-2.5 pb-1 px-1">
+                <p className="font-['Inter:Medium',sans-serif] text-[13.5px] sm:text-[15px] text-[#101828] font-medium truncate">
+                  {prod.name}
+                </p>
+                <div className="flex items-center gap-0.5 mt-1">
+                  <StarFull />
+                  <StarFull />
+                  <StarFull />
+                  <StarFull />
+                  <StarEmpty />
+                </div>
+              </div>
+
+              {/* Full-width Redeem Button */}
+              <div className="pt-1.5 px-1 pb-0.5">
+                <button
+                  onClick={() => setRedeemProduct(prod)}
+                  className="w-full h-[34px] sm:h-[38px] rounded-[10px] bg-gradient-to-r from-[#ff6900] to-[#f54900] hover:from-[#e55d00] hover:to-[#d94000] text-white font-['Inter:Medium',sans-serif] text-[13px] sm:text-[14.5px] font-medium transition-all duration-150 cursor-pointer active:scale-[0.98] shadow-2xs"
+                >
+                  Redeem
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </main>
+  );
+}
+
 // ─── Main App ─────────────────────────────────────────────────────────────────
 
 export default function App() {
@@ -2179,6 +2455,8 @@ export default function App() {
           <BadgesPage />
         ) : page === 'gift-cards' ? (
           <GiftCardsPage />
+        ) : page === 'catalog' ? (
+          <CatalogPage />
         ) : (
           <>
             {/* ── MOBILE layout (hidden on md+) ─────────────────────────────── */}
