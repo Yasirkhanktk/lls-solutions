@@ -1,9 +1,12 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, createContext, useContext } from 'react';
 import svgPaths from '../imports/svg-opovdd5lqn';
 import WallPage from './WallPage';
 import logoImg from './assets/logo.png';
 
-type Page = 'dashboard' | 'wall' | 'results' | 'user-ranking' | 'badges' | 'gift-cards' | 'catalog';
+export type Page = 'dashboard' | 'wall' | 'results' | 'user-ranking' | 'badges' | 'gift-cards' | 'catalog';
+
+export const NavigationContext = createContext<(page: Page) => void>(() => {});
+export const useNavigation = () => useContext(NavigationContext);
 
 function RibbonMedalIcon({ size = 20, color = '#F54900' }: { size?: number; color?: string }) {
   return (
@@ -562,6 +565,8 @@ function StatCard({ label, value, trend, trendValue, icon, gradientAngle = '153d
 // ─── Achievements Card (Desktop) ──────────────────────────────────────────────
 
 function AchievementsCard({ onOpenModal }: { onOpenModal?: () => void }) {
+  const nav = useNavigation();
+
   return (
     <div
       onClick={onOpenModal}
@@ -578,7 +583,7 @@ function AchievementsCard({ onOpenModal }: { onOpenModal?: () => void }) {
       <button
         onClick={(e) => {
           e.stopPropagation();
-          onOpenModal?.();
+          nav('badges');
         }}
         className="absolute top-5 right-5 font-['Inter:Regular',sans-serif] text-[13px] text-[#f54900] group-hover:underline cursor-pointer transition-colors duration-150"
       >
@@ -605,6 +610,8 @@ function AchievementsCard({ onOpenModal }: { onOpenModal?: () => void }) {
 // ─── Achievements Card (Mobile compact) ──────────────────────────────────────
 
 function AchievementsCardMobile({ onOpenModal }: { onOpenModal?: () => void }) {
+  const nav = useNavigation();
+
   return (
     <div
       onClick={onOpenModal}
@@ -638,7 +645,7 @@ function AchievementsCardMobile({ onOpenModal }: { onOpenModal?: () => void }) {
       <button
         onClick={(e) => {
           e.stopPropagation();
-          onOpenModal?.();
+          nav('badges');
         }}
         className="shrink-0 font-['Inter:Medium',sans-serif] text-[12px] sm:text-[13px] text-[#f54900] group-hover:underline cursor-pointer transition-colors duration-150 whitespace-nowrap"
       >
@@ -856,6 +863,8 @@ function AchievementsBadgesModal({ isOpen, onClose }: AchievementsBadgesModalPro
 // ─── Wall Feed Card ───────────────────────────────────────────────────────────
 
 function WallFeedCard() {
+  const nav = useNavigation();
+
   return (
     <div
       className="rounded-[15px] overflow-hidden shadow-[0px_10px_16px_-3px_rgba(0,0,0,0.1)] flex-1 cursor-default"
@@ -871,14 +880,19 @@ function WallFeedCard() {
           <div className="bg-white/20 px-3 py-1 rounded-[9px]">
             <span className="font-['Inter:Semi_Bold',sans-serif] text-[11px] text-white">Live</span>
           </div>
-          <button className="font-['Inter:Medium',sans-serif] text-[13px] text-white hover:underline cursor-pointer transition-colors duration-150">View All →</button>
+          <button
+            onClick={() => nav('wall')}
+            className="font-['Inter:Medium',sans-serif] text-[13px] text-white hover:underline cursor-pointer transition-colors duration-150"
+          >
+            View All →
+          </button>
         </div>
       </div>
 
       {/* Posts */}
       <div className="px-6 pt-4 pb-4 flex flex-col gap-3">
         {/* Post 1 */}
-        <div className="bg-white/23 rounded-[15px] p-4 flex items-center gap-3 hover:bg-white/30 transition-colors duration-150 cursor-pointer">
+        <div className="bg-white/23 rounded-[15px] p-4 flex items-center gap-3 hover:bg-white/30 transition-colors duration-150 cursor-pointer" onClick={() => nav('wall')}>
           <span className="text-2xl shrink-0">🎉</span>
           <div>
             <p className="font-['Inter:Medium',sans-serif] text-[17px] text-white leading-snug">Juan acaba de canjear unos audífonos</p>
@@ -887,7 +901,7 @@ function WallFeedCard() {
         </div>
 
         {/* Post 2 */}
-        <div className="bg-white/23 rounded-[15px] p-4 flex items-center gap-3 hover:bg-white/30 transition-colors duration-150 cursor-pointer">
+        <div className="bg-white/23 rounded-[15px] p-4 flex items-center gap-3 hover:bg-white/30 transition-colors duration-150 cursor-pointer" onClick={() => nav('wall')}>
           <span className="text-2xl shrink-0">⭐</span>
           <div>
             <p className="font-['Inter:Medium',sans-serif] text-[17px] text-white leading-snug">Ana subió al puesto #2 en el ranking</p>
@@ -896,7 +910,10 @@ function WallFeedCard() {
         </div>
 
         {/* View more */}
-        <button className="w-full bg-white rounded-[15px] h-[46px] hover:bg-orange-50 hover:shadow-md transition-all duration-150 cursor-pointer active:scale-[0.99]">
+        <button
+          onClick={() => nav('wall')}
+          className="w-full bg-white rounded-[15px] h-[46px] hover:bg-orange-50 hover:shadow-md transition-all duration-150 cursor-pointer active:scale-[0.99]"
+        >
           <span className="font-['Inter:Regular',sans-serif] text-[17px] text-[#f54900]">Ver más del Wall</span>
         </button>
       </div>
@@ -916,6 +933,8 @@ const transactions = [
 ];
 
 function RecentTransactionsCard() {
+  const nav = useNavigation();
+
   return (
     <div
       className="rounded-[15px] border border-[#ffd6a7] drop-shadow-[0px_10px_8px_rgba(0,0,0,0.1)] cursor-default w-full md:w-[320px] xl:w-[360px] md:flex-none"
@@ -927,7 +946,12 @@ function RecentTransactionsCard() {
           <TransactionsIcon />
           <span className="font-['Inter:Regular',sans-serif] text-[17px] text-[#0a0a0a]">Recent Transactions</span>
         </div>
-        <button className="font-['Inter:Regular',sans-serif] text-[13px] text-[#f54900] hover:underline cursor-pointer transition-colors duration-150">View All →</button>
+        <button
+          onClick={() => nav('results')}
+          className="font-['Inter:Regular',sans-serif] text-[13px] text-[#f54900] hover:underline cursor-pointer transition-colors duration-150"
+        >
+          View All →
+        </button>
       </div>
 
       {/* Table */}
@@ -2439,7 +2463,8 @@ export default function App() {
   const [achievementsModalOpen, setAchievementsModalOpen] = useState(false);
 
   return (
-    <div className="flex h-full overflow-hidden bg-white">
+    <NavigationContext.Provider value={setPage}>
+      <div className="flex h-full overflow-hidden bg-white">
       {/* Achievements & Badges Modal */}
       <AchievementsBadgesModal
         isOpen={achievementsModalOpen}
@@ -2632,5 +2657,6 @@ export default function App() {
         )}
       </div>
     </div>
-  );
+  </NavigationContext.Provider>
+);
 }
