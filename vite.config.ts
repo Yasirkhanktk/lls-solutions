@@ -17,8 +17,11 @@ export default defineConfig(({ mode }) => {
   // .figma/make/deploy-preview passes `--mode development` for cached-preview builds.
   const emitSourcemaps = mode === 'development'
 
+  const publicUrl = process.env.FIGMA_PUBLIC_URL
+  const base = publicUrl ? (publicUrl.endsWith('/') ? publicUrl : `${publicUrl}/`) : '/'
+
   return {
-    base: process.env.FIGMA_PUBLIC_URL ? `${process.env.FIGMA_PUBLIC_URL}/` : '/',
+    base,
     build: {
       sourcemap: emitSourcemaps ? 'inline' : false,
       minify: !emitSourcemaps,
@@ -29,6 +32,7 @@ export default defineConfig(({ mode }) => {
       figmaSiteConfiguration(siteConfiguration),
       figmaErrorOverlayReplay(),
       figmaReactRefreshBoundaryFallback(),
+      figmaHealthCheckPlugin(),
       figmaMakeKitPlugin({ storiesGlob: '/src/**/*.stories.{ts,tsx,js,jsx}' }),
     ],
     resolve: {
@@ -40,16 +44,19 @@ export default defineConfig(({ mode }) => {
       host: '0.0.0.0',
       port: parseInt(process.env.PORT || '8443'),
       strictPort: false,
+      cors: true,
       allowedHosts: true,
       watch: { ignored: ['**/.figma/**'] },
     },
     preview: {
       host: '0.0.0.0',
       port: parseInt(process.env.PORT || '8443'),
+      cors: true,
       allowedHosts: true,
     },
   }
 })
+
 
 type FigmaSiteConfiguration = {
   title?: string
@@ -305,6 +312,36 @@ function figmaReactRefreshBoundaryFallback(): Plugin {
 }
 
 /**
+ * Responds to readiness / health check probes (/health, /healthz, /ping, /_health)
+ * with 200 OK for both dev server and preview server.
+ */
+function figmaHealthCheckPlugin(): Plugin {
+  const isHealthPath = (pathname: string) =>
+    pathname === '/health' || pathname === '/healthz' || pathname === '/ping' || pathname === '/_health'
+
+  const handleHealth = (req: any, res: any, next: any) => {
+    const pathname = (req.url || '').split('?')[0]
+    if (isHealthPath(pathname)) {
+      res.statusCode = 200
+      res.setHeader('Content-Type', 'text/plain; charset=utf-8')
+      res.end('OK')
+      return
+    }
+    next()
+  }
+
+  return {
+    name: 'figma-health-check',
+    configureServer(server) {
+      server.middlewares.use(handleHealth)
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use(handleHealth)
+    },
+  }
+}
+
+/**
  * Serves a blank render-target page at /.figma/make/kit.html that
  * the Figma preview script drives directly. The page exposes a
  * registry of every file matching `storiesGlob` on
@@ -331,7 +368,7 @@ function figmaMakeKitPlugin(options: { storiesGlob: string | string[] }): Plugin
 <div id="figma-make-kit-root"></div>
 <script type="module">
   import { stories } from 'virtual:figma-stories'
-  window.__FIGMA__ = Object.assign(window.__FIGMA__ ?? {}, { stories })
+  window.__FIGMA__ = Object.assign(window.__FIGMA__ ?? {}, { stories, ready: true })
   window.dispatchEvent(new CustomEvent('figma.ready'))
 </script>
 </body>
@@ -351,7 +388,8 @@ function figmaMakeKitPlugin(options: { storiesGlob: string | string[] }): Plugin
     configureServer(server) {
       server.middlewares.use(async (req, res, next) => {
         const url = req.url || ''
-        if (url.split('?')[0] !== ROUTE) return next()
+        const pathname = url.split('?')[0]
+        if (pathname !== ROUTE && !pathname.endsWith(ROUTE)) return next()
 
         try {
           res.setHeader('Content-Type', 'text/html')
